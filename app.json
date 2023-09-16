@@ -22,7 +22,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.arvindkumar143.Mverse"
     },
     "web": {
       "bundler": "metro",
@@ -34,6 +35,14 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "fb3310ba-66ce-4275-900c-4dbf3055f250"
+      }
     }
   }
 }
