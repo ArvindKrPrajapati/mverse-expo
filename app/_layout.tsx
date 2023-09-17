@@ -11,6 +11,7 @@ import { useColorScheme } from "react-native";
 import { AuthProvider } from "../Providers/AuthProvider";
 import { SnackbarProvider } from "../Providers/SnackbarProvider";
 import { Text } from "../components/Themed";
+import Menu from "../components/Menu";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -89,6 +90,14 @@ function RootLayoutNav() {
                 presentation: "modal",
                 headerTitle: "Create Channel",
                 animation: "slide_from_right",
+                headerRight: () => <Menu style={{ marginRight: 0 }} />,
+              }}
+            />
+            <Stack.Screen
+              name="settings"
+              options={{
+                headerTitle: "Settings",
+                animation: "slide_from_right",
               }}
             />
             <Stack.Screen
@@ -98,6 +107,7 @@ function RootLayoutNav() {
                 title: route?.params?.username || "Profile",
                 headerShown: true,
                 animation: "slide_from_right",
+                headerRight: () => <Menu style={{ marginRight: 0 }} />,
               })}
             />
           </Stack>

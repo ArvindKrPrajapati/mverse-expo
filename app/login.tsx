@@ -1,6 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import { Image, Platform, StyleSheet, useColorScheme } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import { Text, View } from "../components/Themed";
 import Input from "../components/Input";
@@ -15,7 +15,6 @@ const darkLogo = require("../assets/images/darkLogo.png");
 const logo = require("../assets/images/logo.png");
 
 export default function LoginScreen() {
-  const [passwordVisible, setPasswordVisible] = useState(false);
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
@@ -24,11 +23,20 @@ export default function LoginScreen() {
   const colorScheme = useColorScheme();
   const { updateUser } = useAuth();
   const router = useRouter();
-  const { navigate } = useNavigation();
+  const navigation = useNavigation();
 
-  const handlePasswordToggle = () => {
-    setPasswordVisible(!passwordVisible);
-  };
+  const [previousRoute, setPreviousRoute] = useState("");
+  const [previousRouteParams, setPreviousRouteParams] = useState({});
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("state", (e) => {
+      const previousState = e.data.state.routes.slice(-2)[0];
+      setPreviousRoute(previousState?.name || "");
+      setPreviousRouteParams(previousState?.params || {});
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
   const handleChange = (input: string, e: string) => {
     switch (input) {
@@ -79,8 +87,13 @@ export default function LoginScreen() {
         updateUser(res.data);
         await AsyncStorage.setItem("token", res.token);
         showSuccessSnackbar("login successfully");
+        const paramsToPass = {
+          ...previousRouteParams,
+          refresh: true,
+        };
+
         // @ts-ignore
-        navigate("(tabs)");
+        navigation.navigate(previousRoute, paramsToPass);
       } else {
         showErrorSnackbar(res.error);
       }

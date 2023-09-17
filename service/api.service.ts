@@ -1,4 +1,10 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 const baseUrl = "https://mverse-next.vercel.app";
+const getToken = async () => {
+  return await AsyncStorage.getItem("token");
+};
+
 export const mversePost = async (url: string, data: any) => {
   let options: RequestInit = {
     method: "POST",
@@ -12,18 +18,33 @@ export const mversePost = async (url: string, data: any) => {
 };
 
 export const mverseGet = async (url: string) => {
-  const res = await fetch(baseUrl + url);
+  const token = await getToken();
+  const headers: any = {};
+
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
+
+  const res = await fetch(baseUrl + url, {
+    headers,
+  });
+
   return res.json();
 };
 
 export const mversePatch = async (url: string, data: any) => {
-  let options: RequestInit = {
+  let options: any = {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(data),
   };
+  const token = await getToken();
+
+  if (token) {
+    options.headers["Authorization"] = `Bearer ${token}`;
+  }
   const res = await fetch(baseUrl + url, options);
   return res.json();
 };

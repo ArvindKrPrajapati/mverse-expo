@@ -6,12 +6,33 @@ type Props = {
     name?: string;
     dp?: string;
     channelName?: string;
+    cover?: string;
   };
-  size: number;
-  style?: any; // Use the 'style' prop instead of 'className'
+  size?: number;
+  style?: any;
+  type?: string;
 };
 
-const GenerateUserPicture = ({ user, style, size = 25 }: Props) => {
+const GenerateUserPicture = ({
+  user,
+  style,
+  size = 25,
+  type = "dp",
+}: Props) => {
+  if (type == "cover") {
+    return (
+      <>
+        {user.cover ? (
+          <Image
+            source={{ uri: user.cover }}
+            style={{ width: "100%", aspectRatio: "4/1" }}
+          />
+        ) : (
+          <View style={{ width: "100%", height: 80 }}></View>
+        )}
+      </>
+    );
+  }
   if (user?.dp) {
     return (
       <Image

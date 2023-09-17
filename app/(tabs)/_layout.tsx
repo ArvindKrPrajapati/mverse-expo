@@ -5,6 +5,7 @@ import { Image, Pressable, useColorScheme } from "react-native";
 import Colors from "../../constants/Colors";
 import { useAuth } from "../../Providers/AuthProvider";
 import GenerateUserPicture from "../../components/GenerateUserPicture";
+import Menu from "../../components/Menu";
 const darkLogo = require("../../assets/images/darkLogo.png");
 const logo = require("../../assets/images/logo.png");
 /**
@@ -89,18 +90,7 @@ export default function TabLayout() {
                 </Link>
               </>
             )}
-            <Link href="/modal" asChild>
-              <Pressable>
-                {({ pressed }) => (
-                  <MaterialCommunityIcons
-                    name="dots-vertical"
-                    size={25}
-                    color={Colors[colorScheme ?? "light"].text}
-                    style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
-                  />
-                )}
-              </Pressable>
-            </Link>
+            <Menu />
           </>
         ),
         headerLeft: () => (
