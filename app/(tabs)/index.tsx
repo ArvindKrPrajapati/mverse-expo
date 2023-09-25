@@ -9,7 +9,7 @@ export default function Home() {
       <Text style={styles.title}>HOme</Text>
       <Pressable>
         <Link
-        href="/profile/@Mvers"
+        href="/profile/@Mverse"
         >
         <Text>hiii</Text>
         </Link>
