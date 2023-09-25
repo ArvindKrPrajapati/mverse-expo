@@ -9,26 +9,38 @@ import Colors from "../constants/Colors";
 import VideoMenu from "./VideoMenu";
 import { TouchableHighlight } from "react-native-gesture-handler";
 
-export default function Card({ item, history = false }: any) {
+export default function Card({
+  item,
+  history = false,
+  horizontal = true,
+}: any) {
   const colorScheme = useColorScheme();
   const styleForHistory = history
     ? {
         aspectRatio: 16 / 10,
       }
     : {};
+
+  const horizontalStyle = horizontal ? { height: 90 } : { width: "100%" };
   return (
     <TouchableHighlight onPress={() => alert("hiii")}>
       <View
         style={{
-          padding: 10,
-          flexDirection: history ? "column" : "row",
+          marginBottom: horizontal ? 0 : 10,
+          padding: horizontal ? 10 : 0,
+          flexDirection: history || !horizontal ? "column" : "row",
         }}
       >
-        <View style={{ height: 90, aspectRatio: 16 / 10 }}>
+        {/* @ts-ignore */}
+        <View style={[{ aspectRatio: 16 / 10 }, horizontalStyle]}>
           <Image
             source={{ uri: item?.thumbnail }}
-            style={{ width: "100%", height: "100%", borderRadius: 5 }}
-            resizeMode="cover"
+            style={{
+              width: "100%",
+              height: "100%",
+              borderRadius: horizontal ? 5 : 0,
+            }}
+            resizeMode="stretch"
           />
           <Text
             style={{
@@ -50,11 +62,20 @@ export default function Card({ item, history = false }: any) {
             {
               flexDirection: "row",
               flex: history ? 0 : 1,
-              paddingVertical: history ? 5 : 0,
+              paddingVertical: history ? 5 : horizontal ? 0 : 12,
             },
             styleForHistory,
           ]}
         >
+          {!horizontal ? (
+            <View style={{ marginHorizontal: 5 }}>
+              <Link href={`/profile/${item.by.username}`}>
+                <TouchableHighlight>
+                  <GenerateUserPicture size={35} user={item.by} />
+                </TouchableHighlight>
+              </Link>
+            </View>
+          ) : null}
           <View
             style={{
               paddingHorizontal: history ? 2 : 10,
@@ -64,7 +85,7 @@ export default function Card({ item, history = false }: any) {
             <Text
               style={{
                 fontSize: 14,
-                marginBottom: 4,
+                marginBottom: 2,
                 flexWrap: "wrap",
                 lineHeight: 19,
               }}
@@ -82,6 +103,7 @@ export default function Card({ item, history = false }: any) {
                 <>{item.by.channelName}</>
               ) : (
                 <>
+                  {!horizontal ? item.by.channelName + "  " : null}
                   {handleNumbers(item?.views || 0)} views{"  "}
                   {formatDate(item?.createdAt)}
                 </>
