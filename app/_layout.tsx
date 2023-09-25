@@ -59,7 +59,7 @@ function RootLayoutNav() {
         <ThemeProvider
           value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
         >
-          <Stack screenOptions={{animation:"slide_from_right"}}>
+          <Stack screenOptions={{ animation: "slide_from_right" }}>
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             <Stack.Screen
               name="login"
@@ -93,6 +93,15 @@ function RootLayoutNav() {
                 headerRight: () => <Menu style={{ marginRight: 0 }} />,
               }}
             />
+             <Stack.Screen
+              name="search-modal"
+              options={{
+                presentation: "modal",
+                headerShown:false,
+                headerTitle: "search",
+                animation: "slide_from_bottom",
+              }}
+            />
             <Stack.Screen
               name="error"
               options={{
@@ -117,16 +126,16 @@ function RootLayoutNav() {
                 headerRight: () => <Menu style={{ marginRight: 0 }} />,
               })}
             />
-             <Stack.Screen
+            <Stack.Screen
               name="playlist/[playlist]"
               //@ts-ignore
               options={({ route }: any) => ({
-                title: route?.params?.playlist.replace("-"," ") || "Playlist",
+                title: route?.params?.playlist.replace("-", " ") || "Playlist",
                 headerShown: true,
                 headerRight: () => <Menu style={{ marginRight: 0 }} />,
               })}
             />
-             <Stack.Screen
+            <Stack.Screen
               name="private-playlist"
               //@ts-ignore
               options={({ route }: any) => ({
