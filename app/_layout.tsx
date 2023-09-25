@@ -5,13 +5,15 @@ import {
   ThemeProvider,
 } from "@react-navigation/native";
 import { useFonts } from "expo-font";
-import { SplashScreen, Stack } from "expo-router";
+import { SplashScreen, Stack, useRouter } from "expo-router";
 import { useEffect } from "react";
-import { useColorScheme } from "react-native";
+import { Pressable, TextInput, View, useColorScheme } from "react-native";
 import { AuthProvider } from "../Providers/AuthProvider";
 import { SnackbarProvider } from "../Providers/SnackbarProvider";
 import { Text } from "../components/Themed";
 import Menu from "../components/Menu";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import Colors from "../constants/Colors";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -52,6 +54,7 @@ export default function RootLayout() {
 
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
+  const router = useRouter();
 
   return (
     <AuthProvider>
@@ -93,11 +96,11 @@ function RootLayoutNav() {
                 headerRight: () => <Menu style={{ marginRight: 0 }} />,
               }}
             />
-             <Stack.Screen
+            <Stack.Screen
               name="search-modal"
               options={{
                 presentation: "modal",
-                headerShown:false,
+                headerShown: false,
                 headerTitle: "search",
                 animation: "slide_from_bottom",
               }}
@@ -123,6 +126,40 @@ function RootLayoutNav() {
                 title: route?.params?.username || "Profile",
                 headerShown: true,
                 animation: "slide_from_right",
+                headerRight: () => <Menu style={{ marginRight: 0 }} />,
+              })}
+            />
+            <Stack.Screen
+              name="search-page"
+              //@ts-ignore
+              options={({ route, navigation }: any) => ({
+                title: "",
+                headerShown: true,
+                animation: "slide_from_right",
+                headerLeft: () => (
+                  <View
+                    style={{
+                      flex: 1,
+                      flexDirection: "row",
+                      gap: 15,
+                      alignItems: "center",
+                    }}
+                  >
+                    <Pressable onPress={()=>router.back()}>
+                      <MaterialCommunityIcons
+                        name="arrow-left"
+                        size={20}
+                        color={Colors[colorScheme ?? "light"].text}
+                      />
+                    </Pressable>
+                    <Pressable
+                      onPress={() => router.push(`/search-modal?search=${route.params.search}`)}
+                      style={{ backgroundColor:Colors[colorScheme ?? "light"].secondary,padding:6,paddingHorizontal:10,borderRadius:50,width:"70%"}}
+                    >
+                      <Text numberOfLines={1}>{route.params.search || ""}</Text>
+                    </Pressable>
+                  </View>
+                ),
                 headerRight: () => <Menu style={{ marginRight: 0 }} />,
               })}
             />

@@ -9,15 +9,16 @@ import {
   TouchableOpacity,
 } from "react-native-gesture-handler";
 import { FontAwesome, MaterialCommunityIcons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
+import { useGlobalSearchParams, useRouter } from "expo-router";
 import { mverseGet } from "../service/api.service";
 import { useSnackbar } from "../Providers/SnackbarProvider";
 
 const SearchModal = () => {
+  const glob=useGlobalSearchParams()
   const router = useRouter();
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [searchText, setSearchText] = useState("");
+  const [searchText, setSearchText] = useState<any>(glob.search || "");
 
   const colorScheme = useColorScheme();
   const { showErrorSnackbar, showSuccessSnackbar } = useSnackbar();
@@ -41,6 +42,10 @@ const SearchModal = () => {
       setLoading(false);
     }
   };
+
+  const goToSearch=(text:any)=>{
+    router.replace(`/search-page?search=${text}`)
+  }
   return (
     <>
       <View
@@ -68,6 +73,7 @@ const SearchModal = () => {
         </TouchableOpacity>
         <TextInput
           placeholder="search"
+          value={searchText}
           onChangeText={handleChange}
           placeholderTextColor={Colors[colorScheme ?? "light"].secondaryText}
           autoFocus={true}
@@ -89,6 +95,7 @@ const SearchModal = () => {
               alignItems: "center",
               gap: 10,
             }}
+            onPress={()=>goToSearch(searchText)}
           >
             {loading ? (
               <ActivityIndicator
@@ -114,6 +121,7 @@ const SearchModal = () => {
               alignItems: "center",
               gap: 10,
             }}
+            onPress={()=>goToSearch(item.title)}
           >
             <FontAwesome
                 name="search"
