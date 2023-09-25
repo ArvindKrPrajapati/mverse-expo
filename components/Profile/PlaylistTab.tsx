@@ -1,12 +1,12 @@
-import { View, Text } from 'react-native'
-import React from 'react'
+import React from "react";
+import { useGlobalSearchParams } from "expo-router";
+import PlayList from "../PlayList";
 
 const PlaylistTab = () => {
-  return (
-    <View>
-      <Text>PlaylistTab</Text>
-    </View>
-  )
-}
+  const glob = useGlobalSearchParams();
+  const username = glob.username;
 
-export default PlaylistTab
+  return <PlayList username={username} />;
+};
+
+export default PlaylistTab;

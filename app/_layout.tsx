@@ -59,7 +59,7 @@ function RootLayoutNav() {
         <ThemeProvider
           value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
         >
-          <Stack>
+          <Stack screenOptions={{animation:"slide_from_right"}}>
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             <Stack.Screen
               name="login"
@@ -114,6 +114,24 @@ function RootLayoutNav() {
                 title: route?.params?.username || "Profile",
                 headerShown: true,
                 animation: "slide_from_right",
+                headerRight: () => <Menu style={{ marginRight: 0 }} />,
+              })}
+            />
+             <Stack.Screen
+              name="playlist/[playlist]"
+              //@ts-ignore
+              options={({ route }: any) => ({
+                title: route?.params?.playlist.replace("-"," ") || "Playlist",
+                headerShown: true,
+                headerRight: () => <Menu style={{ marginRight: 0 }} />,
+              })}
+            />
+             <Stack.Screen
+              name="private-playlist"
+              //@ts-ignore
+              options={({ route }: any) => ({
+                title: "Private Playlist",
+                headerShown: true,
                 headerRight: () => <Menu style={{ marginRight: 0 }} />,
               })}
             />

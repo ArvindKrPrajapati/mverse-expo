@@ -1,10 +1,10 @@
 import React from "react";
 import { Text, View } from "./Themed";
 
-const NotFound = () => {
+const NotFound = ({message}:any) => {
   return (
     <View>
-      <Text>NotFound</Text>
+      <Text>{message || "NotFound"}</Text>
     </View>
   );
 };

@@ -12,6 +12,7 @@ import Constants from "expo-constants";
 import * as ImagePicker from "expo-image-picker";
 import { mverseGet, uploadImage } from "../service/api.service";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import LogoButton from "../components/LogoButton";
 
 const Settings = () => {
   const { showSuccessSnackbar } = useSnackbar();
@@ -31,7 +32,7 @@ const Settings = () => {
         <Text style={{ marginBottom: 10 }}>User settings</Text>
         <ChangeImage type="dp" />
         <ChangeImage type="cover" />
-        <OptionButtonWithLogo
+        <LogoButton
           label="Logout"
           icon="logout"
           onPress={logMeOut}
@@ -117,7 +118,7 @@ const ChangeImage = ({ type }: any) => {
         statusBarTranslucent={true}
       >
         <View style={{ flex: 1, paddingVertical: 120, alignItems: "center" }}>
-          <OptionButtonWithLogo
+          <LogoButton
             icon="close"
             label={"Change " + type}
             iconSize={25}
@@ -175,7 +176,7 @@ const ChangeImage = ({ type }: any) => {
           >
             {!loading ? (
               <>
-                <OptionButtonWithLogo
+                <LogoButton
                   onPress={pickImage}
                   label="select image"
                   icon="pencil"
@@ -186,7 +187,7 @@ const ChangeImage = ({ type }: any) => {
                   }}
                 />
                 {image ? (
-                  <OptionButtonWithLogo
+                  <LogoButton
                     onPress={handleSave}
                     label="save"
                     icon="content-save-outline"
@@ -202,7 +203,7 @@ const ChangeImage = ({ type }: any) => {
           </View>
         </View>
       </Modal>
-      <OptionButtonWithLogo
+      <LogoButton
         label={"Change " + type}
         icon="pencil"
         onPress={() => setIsVisible(true)}
@@ -211,51 +212,4 @@ const ChangeImage = ({ type }: any) => {
   );
 };
 
-const OptionButtonWithLogo = ({
-  label,
-  icon,
-  onPress,
-  textColor,
-  style,
-  iconSize = 20,
-}: any) => {
-  const colorScheme = useColorScheme();
 
-  return (
-    <Pressable
-      onPress={onPress}
-      style={[
-        {
-          padding: 10,
-          borderRadius: 5,
-          flexDirection: "row",
-          gap: 10,
-          marginTop: 7,
-          backgroundColor: Colors[colorScheme ?? "light"].secondary,
-        },
-        style,
-      ]}
-    >
-      {({ pressed }) => (
-        <>
-          <MaterialCommunityIcons
-            name={icon}
-            size={iconSize}
-            color={textColor || Colors[colorScheme ?? "light"].text}
-            style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
-          />
-          {label ? (
-            <Text
-              style={{
-                color: textColor || Colors[colorScheme ?? "light"].text,
-                opacity: pressed ? 0.5 : 1,
-              }}
-            >
-              {label}
-            </Text>
-          ) : null}
-        </>
-      )}
-    </Pressable>
-  );
-};
