@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useGlobalSearchParams, useRouter } from "expo-router";
+import { Redirect, useGlobalSearchParams, useRouter } from "expo-router";
 import { Text, View } from "../Themed";
 import { useAuth } from "../../Providers/AuthProvider";
 import { useSnackbar } from "../../Providers/SnackbarProvider";
@@ -83,7 +83,6 @@ const colorScheme=useColorScheme()
  
   return (
     <View style={{ flex: 1 }}>
-
       {userInfo ? (
         <ScrollView>
           <GenerateUserPicture type="cover" user={userInfo} />
@@ -113,7 +112,7 @@ const colorScheme=useColorScheme()
           </View>
         </ScrollView>
       ) : (
-        <NotFound />
+       <Redirect href={`/error?message=${encodeURIComponent("User Not Found")}`} />
       )}
     </View>
   );

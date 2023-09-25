@@ -94,6 +94,13 @@ function RootLayoutNav() {
               }}
             />
             <Stack.Screen
+              name="error"
+              options={{
+                headerTitle: "Error",
+                animation: "slide_from_bottom",
+              }}
+            />
+            <Stack.Screen
               name="settings"
               options={{
                 headerTitle: "Settings",
