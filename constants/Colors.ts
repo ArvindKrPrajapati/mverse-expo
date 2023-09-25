@@ -13,7 +13,7 @@ export default {
     secondaryText: "#222",
   },
   dark: {
-    text: "#fff",
+    text: "#eee",
     background: "#000",
     tint: tintColorDark,
     tabIconDefault: "#ccc",

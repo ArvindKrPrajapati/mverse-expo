@@ -1,11 +1,19 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet,Pressable } from "react-native";
 
 import { Text, View } from "../../components/Themed";
+import { Link } from "expo-router";
 
 export default function Home() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>HOme</Text>
+      <Pressable>
+        <Link
+        href="/profile/@Mvers"
+        >
+        <Text>hiii</Text>
+        </Link>
+      </Pressable>
     </View>
   );
 }

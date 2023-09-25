@@ -1,14 +1,48 @@
 import React from "react";
-import { useColorScheme } from "react-native";
-import Colors from "../../constants/Colors";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import HomeTab from "../../components/Profile/HomeTab";
-import VideosTab from "../../components/Profile/VideosTab";
-import PlaylistTab from "../../components/Profile/PlaylistTab";
-import AboutTab from "../../components/Profile/AboutTab";
+import { Text, View } from "./Themed";
+import Colors from "../constants/Colors";
+import { ScrollView, useColorScheme } from "react-native";
+
 const Tab = createMaterialTopTabNavigator();
-const ProfileScreen = () => {
+
+function HomeTab() {
+  return <Text>Tab 1 Content</Text>;
+}
+
+function VideosTab() {
+  return (
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <Text>Tab 2 Content</Text>
+    </View>
+  );
+}
+
+function PlaylistTab() {
+  return (
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <Text>Tab 3 Content</Text>
+    </View>
+  );
+}
+function BlogsTab() {
+  return (
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <Text>Tab 3 Content</Text>
+    </View>
+  );
+}
+function AboutTab() {
+  return (
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <Text>Tab 3 Content</Text>
+    </View>
+  );
+}
+
+function ProfileTabs() {
   const colorScheme = useColorScheme();
+
   return (
     <Tab.Navigator
       screenOptions={{
@@ -30,12 +64,13 @@ const ProfileScreen = () => {
         animationEnabled: true,
       }}
     >
-      <Tab.Screen name="About" component={AboutTab} />
       <Tab.Screen name="Home" component={HomeTab} />
       <Tab.Screen name="Videos" component={VideosTab} />
       <Tab.Screen name="Playlist" component={PlaylistTab} />
+      <Tab.Screen name="Blogs" component={BlogsTab} />
+      <Tab.Screen name="About" component={AboutTab} />
     </Tab.Navigator>
   );
-};
+}
 
-export default ProfileScreen;
+export default ProfileTabs;
