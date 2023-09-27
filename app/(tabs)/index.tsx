@@ -74,11 +74,11 @@ export default function Home() {
       </View>
     );
   }
-  if (!data.length) {
-    return <NotFound />;
-  }
+
   return (
     <FlatList
+      ListEmptyComponent={<NotFound message="No video found" />}
+      contentContainerStyle={{ flexGrow: 1 }}
       style={{ paddingVertical: 10, paddingBottom: 20 }}
       data={data}
       renderItem={({ item }: any) => <Card horizontal={false} item={item} />}

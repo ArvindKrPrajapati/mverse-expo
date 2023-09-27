@@ -18,6 +18,7 @@ const VideosTab = () => {
   const [data, setData] = useState<any>([]);
   const [end, setEnd] = useState(false);
   const { showErrorSnackbar, showSuccessSnackbar } = useSnackbar();
+  const [refreshing, setRefreshing] = useState(false);
 
   const _init = async (showLoader: boolean = false) => {
     try {
@@ -54,6 +55,24 @@ const VideosTab = () => {
     !end ? setSkip((prev) => prev + limit) : null;
   };
 
+  const onRefresh = async () => {
+    try {
+      setRefreshing(true);
+      const res = await mverseGet(
+        "/api/user/channel/" + username + "/videos?limit=" + limit + "&skip=0"
+      );
+      if (res.success) {
+        setData(res.data);
+      } else {
+        showErrorSnackbar(res.error);
+      }
+    } catch (error: any) {
+      showErrorSnackbar(error.message);
+    } finally {
+      setRefreshing(false);
+    }
+  };
+
   if (loading) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
@@ -61,13 +80,15 @@ const VideosTab = () => {
       </View>
     );
   }
-  if (!data.length) {
-    return <NotFound />;
-  }
+ 
   return (
     <FlatList
       style={{ paddingVertical: 10, paddingBottom: 20 }}
       data={data}
+      ListEmptyComponent={
+        <NotFound message="No video found"/>
+      }
+      contentContainerStyle={{flexGrow:1}}
       renderItem={({ item }: any) => <Card item={item} />}
       onEndReached={loadMore}
       onEndReachedThreshold={0.1}
@@ -80,6 +101,8 @@ const VideosTab = () => {
           />
         ) : null
       }
+      refreshing={refreshing}
+      onRefresh={onRefresh}
     />
   );
 };

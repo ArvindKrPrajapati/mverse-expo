@@ -19,6 +19,7 @@ const PlaylistVideoPage = () => {
   const [data, setData] = useState<any>([]);
   const [end, setEnd] = useState(false);
   const [title, setTitle] = useState("");
+  const [refreshing, setRefreshing] = useState(false);
 
   const [playlist, setPlaylist] = useState<any>({});
   const [total, setTotal] = useState(null);
@@ -45,7 +46,7 @@ const PlaylistVideoPage = () => {
 
       const res = await mverseGet(url);
       if (res.success) {
-        res.data.length ? setData([...data, ...res.data]) : setEnd(true);
+        res.data.length ?skip==0 ? setData(res.data) : setData([...data, ...res.data]) : setEnd(true);
         if (res.playlist) {
           setPlaylist(res.playlist);
           setTotal(res.total);
@@ -71,6 +72,12 @@ const PlaylistVideoPage = () => {
     !end ? setSkip((prev) => prev + limit) : null;
   };
 
+  const onRefresh = async () => {
+    setRefreshing(true);
+    setSkip(0);
+    setRefreshing(false);
+  };
+
   if (loading) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
@@ -79,86 +86,85 @@ const PlaylistVideoPage = () => {
     );
   }
 
-  if (!data.length) {
-    return <NotFound message="no videos available" />;
-  }
-
   return (
     <FlatList
+      ListEmptyComponent={<NotFound message="no videos available" />}
       ListHeaderComponent={
-        <View style={styles.container}>
-          <Image
-            source={{ uri: data[0].thumbnail }}
-            style={styles.backgroundImage}
-            blurRadius={5}
-          />
-
-          <View style={styles.content}>
+        data.length ? (
+          <View style={styles.container}>
             <Image
               source={{ uri: data[0].thumbnail }}
-              style={styles.image}
-              resizeMode="cover"
+              style={styles.backgroundImage}
+              blurRadius={5}
             />
-            <View style={styles.textContainer}>
-              <Text style={styles.title}>{title}</Text>
-              <View
-                style={{
-                  flexDirection: "row",
-                  backgroundColor: "transaparent",
-                  gap: 10,
-                  marginTop: 10,
-                }}
-              >
-                {/* @ts-ignore */}
-                {playlist?.name ? (
-                  <>
-                    <Text>
-                      by{" "}
-                      {playlist?.createdBy.channelName ||
-                        playlist?.createdBy.name}
-                    </Text>
-                    <Text>{total} Videos</Text>
-                  </>
-                ) : null}
-                {playlist?.name ? (
-                  <>
-                    {playlist.isPrivate ? (
-                      <>
-                        <MaterialCommunityIcons
-                          name="lock"
-                          size={20}
-                          color="white"
-                        />
-                        <Text style={styles.infoText}>Private</Text>
-                      </>
-                    ) : (
-                      <>
-                        <MaterialCommunityIcons
-                          name="earth"
-                          size={20}
-                          color="white"
-                        />
-                        <Text style={styles.infoText}>Public</Text>
-                      </>
-                    )}
-                  </>
-                ) : (
-                  <>
-                    <MaterialCommunityIcons
-                      name="lock"
-                      size={20}
-                      color="white"
-                    />
-                    <Text style={styles.infoText}>Private</Text>
-                  </>
-                )}
+
+            <View style={styles.content}>
+              <Image
+                source={{ uri: data[0].thumbnail }}
+                style={styles.image}
+                resizeMode="cover"
+              />
+              <View style={styles.textContainer}>
+                <Text style={styles.title}>{title}</Text>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    backgroundColor: "transaparent",
+                    gap: 10,
+                    marginTop: 10,
+                  }}
+                >
+                  {/* @ts-ignore */}
+                  {playlist?.name ? (
+                    <>
+                      <Text>
+                        by{" "}
+                        {playlist?.createdBy.channelName ||
+                          playlist?.createdBy.name}
+                      </Text>
+                      <Text>{total} Videos</Text>
+                    </>
+                  ) : null}
+                  {playlist?.name ? (
+                    <>
+                      {playlist.isPrivate ? (
+                        <>
+                          <MaterialCommunityIcons
+                            name="lock"
+                            size={20}
+                            color="white"
+                          />
+                          <Text style={styles.infoText}>Private</Text>
+                        </>
+                      ) : (
+                        <>
+                          <MaterialCommunityIcons
+                            name="earth"
+                            size={20}
+                            color="white"
+                          />
+                          <Text style={styles.infoText}>Public</Text>
+                        </>
+                      )}
+                    </>
+                  ) : (
+                    <>
+                      <MaterialCommunityIcons
+                        name="lock"
+                        size={20}
+                        color="white"
+                      />
+                      <Text style={styles.infoText}>Private</Text>
+                    </>
+                  )}
+                </View>
               </View>
             </View>
           </View>
-        </View>
+        ) : null
       }
       style={{ paddingVertical: 10 }}
-      contentContainerStyle={{ paddingBottom: 20 }}
+      contentContainerStyle={{ paddingBottom: 20, flexGrow: 1 }}
       data={data}
       renderItem={({ item }: any) => <Card item={item} />}
       onEndReached={loadMore}
@@ -172,6 +178,8 @@ const PlaylistVideoPage = () => {
           />
         ) : null
       }
+      refreshing={refreshing}
+      onRefresh={onRefresh}
     />
   );
 };

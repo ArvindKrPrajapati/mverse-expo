@@ -9,7 +9,7 @@ import Colors from "../../constants/Colors";
 import NotFound from "../NotFound";
 import Button from "../Button";
 import GenerateUserPicture from "../GenerateUserPicture";
-import { ScrollView } from "react-native-gesture-handler";
+import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 
 const AboutTab = () => {
   const glob = useGlobalSearchParams();
@@ -23,6 +23,7 @@ const colorScheme=useColorScheme()
   const [loading, setLoading] = useState(false);
   const [subscribing, setSubscribing] = useState(false);
   const [userInfo, setUserInfo] = useState<any>(null);
+  const [refreshing, setRefreshing] = useState(false);
 
   const _init = async (showLoader: boolean = true) => {
     try {
@@ -72,6 +73,11 @@ const colorScheme=useColorScheme()
       setSubscribing(false);
     }
   };
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await _init(false);
+    setRefreshing(false);
+  };
 
   if (loading) {
     return (
@@ -84,7 +90,11 @@ const colorScheme=useColorScheme()
   return (
     <View style={{ flex: 1 }}>
       {userInfo ? (
-        <ScrollView>
+        <ScrollView
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+        >
           <GenerateUserPicture type="cover" user={userInfo} />
           <View style={{ alignItems: "center", paddingVertical: 25 }}>
             <GenerateUserPicture type="dp" user={userInfo} size={100} />

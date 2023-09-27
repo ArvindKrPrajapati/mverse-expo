@@ -23,6 +23,7 @@ const PlayList = ({ username = "" }: any) => {
   const [data, setData] = useState<any>([]);
   const [end, setEnd] = useState(false);
   const { showErrorSnackbar } = useSnackbar();
+  const [refreshing, setRefreshing] = useState(false);
 
   const _init = async (showLoader: boolean = false) => {
     try {
@@ -31,8 +32,9 @@ const PlayList = ({ username = "" }: any) => {
 
       let url = "/api/user/playlist?type=private&skip=" + skip;
       if (username) {
-        url = "/api/user/channel/" + username + "/playlist";
+        url = "/api/user/channel/" + username + "/playlist?skip=" + skip;
       }
+
       const res = await mverseGet(url);
       if (res.success) {
         res.data.length ? setData([...data, ...res.data]) : setEnd(true);
@@ -49,11 +51,33 @@ const PlayList = ({ username = "" }: any) => {
 
   useEffect(() => {
     skip == 0 ? _init(true) : _init();
-  }, []);
+  }, [skip]);
 
   const loadMore = () => {
     if (loading || loadMoreLoading) return;
     !end ? setSkip((prev) => prev + limit) : null;
+  };
+
+  const onRefresh = async () => {
+    try {
+      setRefreshing(true);
+      let url = "/api/user/playlist?type=private&skip=0";
+      if (username) {
+        url = "/api/user/channel/" + username + "/playlist?skip=0";
+      }
+
+      const res = await mverseGet(url);
+
+      if (res.success) {
+        setData(res.data);
+      } else {
+        showErrorSnackbar(res.error);
+      }
+    } catch (error: any) {
+      showErrorSnackbar(error.message);
+    } finally {
+      setRefreshing(false);
+    }
   };
 
   if (loading) {
@@ -63,14 +87,11 @@ const PlayList = ({ username = "" }: any) => {
       </View>
     );
   }
-
-  if (!data.length) {
-    return <NotFound message="no videos available" />;
-  }
   return (
     <FlatList
+      ListEmptyComponent={<NotFound message="no videos available" />}
       style={{ paddingVertical: 10 }}
-      contentContainerStyle={{ paddingBottom: 20 }}
+      contentContainerStyle={{ paddingBottom: 20,flexGrow:1 }}
       data={data}
       renderItem={({ item }: any) => <SinglePlaylist item={item} />}
       onEndReached={loadMore}
@@ -84,6 +105,8 @@ const PlayList = ({ username = "" }: any) => {
           />
         ) : null
       }
+      refreshing={refreshing}
+      onRefresh={onRefresh}
     />
   );
 };
