@@ -12,6 +12,7 @@ import { mverseGet } from "../../service/api.service";
 import Colors from "../../constants/Colors";
 import NotFound from "../../components/NotFound";
 import Card from "../../components/Card";
+import CardSkeleton from "../../components/SkeletonLoader/CardSkeleton";
 const limit = 20;
 
 export default function Home() {
@@ -70,7 +71,7 @@ export default function Home() {
   if (loading) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size={50} color={Colors.dark.purple} />
+        <CardSkeleton horizontal={false}/>
       </View>
     );
   }

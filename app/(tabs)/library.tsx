@@ -16,6 +16,7 @@ import { mverseGet } from "../../service/api.service";
 import { useSnackbar } from "../../Providers/SnackbarProvider";
 import LogoButton from "../../components/LogoButton";
 import { useRouter } from "expo-router";
+import CardSkeleton from "../../components/SkeletonLoader/CardSkeleton";
 
 export default function Library() {
   const colorScheme = useColorScheme();
@@ -65,9 +66,9 @@ export default function Library() {
       >
         <Text style={{ fontSize: 18, fontWeight: "bold" }}>History</Text>
         <TouchableOpacity
-         onPress={() => {
-          router.push("/playlist/history");
-        }}
+          onPress={() => {
+            router.push("/playlist/history");
+          }}
         >
           <MaterialCommunityIcons
             name="chevron-right"
@@ -81,13 +82,17 @@ export default function Library() {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       >
-        <FlatList
-          style={{ paddingHorizontal: 5 }}
-          contentContainerStyle={{ backgroundColor: "red" }}
-          data={data}
-          renderItem={({ item }: any) => <Card item={item} history={true} />}
-          horizontal={true}
-        />
+        {loading ? (
+          <CardSkeleton history={true}/>
+        ) : (
+          <FlatList
+            style={{ paddingHorizontal: 5 }}
+            contentContainerStyle={{ backgroundColor: "red" }}
+            data={data}
+            renderItem={({ item }: any) => <Card item={item} history={true} />}
+            horizontal={true}
+          />
+        )}
         <View style={{ padding: 15 }}>
           <LogoButton
             label="Private Playlist"
