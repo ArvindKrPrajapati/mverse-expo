@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const baseUrl = "https://mverse-next.vercel.app";
+export const baseUrl = "https://mverse-next.vercel.app";
 const getToken = async () => {
   return await AsyncStorage.getItem("token");
 };

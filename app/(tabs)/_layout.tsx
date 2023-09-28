@@ -90,7 +90,7 @@ export default function TabLayout() {
                 </Link>
               </>
             )}
-            <Menu />
+            {user ? <Menu />:null}
           </>
         ),
         headerLeft: () => (

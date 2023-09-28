@@ -1,4 +1,5 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { Share } from "react-native";
 import React, { useState } from "react";
 import {
   ActivityIndicator,
@@ -9,15 +10,18 @@ import {
 import Colors from "../constants/Colors";
 import { TouchableHighlight } from "react-native-gesture-handler";
 import { Text, View } from "./Themed";
-import { mversePost } from "../service/api.service";
+import { baseUrl, mversePost } from "../service/api.service";
 import { useSnackbar } from "../Providers/SnackbarProvider";
+import { useAuth } from "../Providers/AuthProvider";
 
 const VideoMenu = ({ _id }: any) => {
   const colorScheme = useColorScheme();
   const { showErrorSnackbar, showSuccessSnackbar } = useSnackbar();
+  const { user } = useAuth();
 
   const [isVisible, setIsVisible] = useState(false);
   const [loading, setLoading] = useState(false);
+
   const addToWatchLater = async () => {
     if (loading) return;
     try {
@@ -37,6 +41,26 @@ const VideoMenu = ({ _id }: any) => {
       showErrorSnackbar(error.message);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const shareToApp = async () => {
+    try {
+      const url = baseUrl + "/play/" + _id;
+      const result = await Share.share({ message: url });
+      // if (result.action === Share.sharedAction) {
+      //   if (result.activityType) {
+      //     // shared with activity type of result.activityType
+      //   } else {
+      //     // shared
+      //   }
+      // } else if (result.action === Share.dismissedAction) {
+      //   // dismissed
+      // }
+    } catch (error: any) {
+      showErrorSnackbar(error.message);
+    } finally {
+      setIsVisible(false);
     }
   };
   return (
@@ -67,8 +91,49 @@ const VideoMenu = ({ _id }: any) => {
                 borderRadius: 5,
               }}
             >
+              {user ? (
+                <Pressable
+                  onPress={addToWatchLater}
+                  style={{
+                    padding: 5,
+                    flexDirection: "row",
+                    gap: 8,
+                    alignItems: "center",
+                  }}
+                >
+                  {({ pressed }) => (
+                    <>
+                      {loading ? (
+                        <ActivityIndicator
+                          size={25}
+                          color={Colors.dark.purple}
+                          style={{ marginRight: 15 }}
+                        />
+                      ) : (
+                        <MaterialCommunityIcons
+                          name="timer-outline"
+                          size={25}
+                          color={Colors[colorScheme ?? "light"].text}
+                          style={{
+                            marginRight: 15,
+                            opacity: pressed ? 0.5 : 1,
+                          }}
+                        />
+                      )}
+                      <Text
+                        style={{
+                          color: Colors[colorScheme ?? "light"].text,
+                          opacity: pressed ? 0.5 : 1,
+                        }}
+                      >
+                        Add to watchlist
+                      </Text>
+                    </>
+                  )}
+                </Pressable>
+              ) : null}
               <Pressable
-                onPress={addToWatchLater}
+                onPress={shareToApp}
                 style={{
                   padding: 5,
                   flexDirection: "row",
@@ -86,7 +151,7 @@ const VideoMenu = ({ _id }: any) => {
                       />
                     ) : (
                       <MaterialCommunityIcons
-                        name="timer-outline"
+                        name="share-outline"
                         size={25}
                         color={Colors[colorScheme ?? "light"].text}
                         style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
@@ -98,7 +163,7 @@ const VideoMenu = ({ _id }: any) => {
                         opacity: pressed ? 0.5 : 1,
                       }}
                     >
-                      Add to watchlist
+                      share
                     </Text>
                   </>
                 )}
