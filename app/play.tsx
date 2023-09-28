@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Text, View } from "../components/Themed";
 import { useRoute } from "@react-navigation/native";
-import { Video, ResizeMode } from "expo-av";
 import { ActivityIndicator, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import * as ScreenOrientation from "expo-screen-orientation";
 import Button from "../components/Button";
 import { ScrollView } from "react-native-gesture-handler";
 
@@ -19,48 +17,11 @@ const PlayPage = () => {
   const route = useRoute();
   // @ts-ignore
   const item = route.params.item || null;
-  const videoRef = React.useRef(null);
-  const [currentOrientation, setCurrentOrientation] = useState(
-    orientationEnum[0]
-  );
-
-  //   states
-  const [isBuffering, setIsBuffering] = useState(true);
-
-  const getOrientation = async () => {
-    const o = await ScreenOrientation.getOrientationAsync();
-    setCurrentOrientation(orientationEnum[o]);
-  };
-  useEffect(() => {
-    getOrientation();
-    // changeOrientation();
-  }, []);
-  const onloadstart = () => {
-    console.log("started");
-  };
-  const onLoad = (e: any) => {
-    console.log("onload");
-  };
-
-  const onPlaybackStatusUpdate = (e: any) => {
-    setIsBuffering(e.isBuffering);
-  };
-  const onReadyForDisplay = (e: any) => {
-    console.log("display");
-  };
-
-  const changeOrientation = async () => {
-    await ScreenOrientation.lockAsync(
-      ScreenOrientation.OrientationLock.PORTRAIT_UP
-    );
-    if(!videoRef.current)return
-    // @ts-ignore
-    // videoRef.current.presentFullscreenPlayer()
-  };
+ 
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+      {/* <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <View
           style={{
             backgroundColor: "transparent",
@@ -125,7 +86,7 @@ const PlayPage = () => {
           Enim consequatur illo facere non laudantium officia nam rem corporis,
           voluptates, aliquam blanditiis consequuntur odit dolorem?
         </Text>
-      </ScrollView>
+      </ScrollView> */}
     </SafeAreaView>
   );
 };
