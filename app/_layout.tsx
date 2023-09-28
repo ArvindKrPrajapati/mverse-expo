@@ -106,6 +106,13 @@ function RootLayoutNav() {
               }}
             />
             <Stack.Screen
+              name="play"
+              options={{
+                headerShown: false,
+                animation: "slide_from_bottom",
+              }}
+            />
+            <Stack.Screen
               name="error"
               options={{
                 headerTitle: "Error",
@@ -145,7 +152,7 @@ function RootLayoutNav() {
                       alignItems: "center",
                     }}
                   >
-                    <Pressable onPress={()=>router.back()}>
+                    <Pressable onPress={() => router.back()}>
                       <MaterialCommunityIcons
                         name="arrow-left"
                         size={20}
@@ -153,8 +160,19 @@ function RootLayoutNav() {
                       />
                     </Pressable>
                     <Pressable
-                      onPress={() => router.push(`/search-modal?search=${route.params.search}`)}
-                      style={{ backgroundColor:Colors[colorScheme ?? "light"].secondary,padding:6,paddingHorizontal:10,borderRadius:50,width:"70%"}}
+                      onPress={() =>
+                        router.push(
+                          `/search-modal?search=${route.params.search}`
+                        )
+                      }
+                      style={{
+                        backgroundColor:
+                          Colors[colorScheme ?? "light"].secondary,
+                        padding: 6,
+                        paddingHorizontal: 10,
+                        borderRadius: 50,
+                        width: "70%",
+                      }}
                     >
                       <Text numberOfLines={1}>{route.params.search || ""}</Text>
                     </Pressable>

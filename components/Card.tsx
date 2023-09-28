@@ -3,7 +3,7 @@ import { Image, Pressable, useColorScheme } from "react-native";
 // import { formatDate, formatTime, handleViews } from "../lib/common";
 import GenerateUserPicture from "./GenerateUserPicture";
 import { Text, View } from "./Themed";
-import { Link } from "expo-router";
+import { Link, useNavigation } from "expo-router";
 import { formatDate, formatTime, handleNumbers } from "../utils/common";
 import Colors from "../constants/Colors";
 import VideoMenu from "./VideoMenu";
@@ -15,6 +15,8 @@ export default function Card({
   horizontal = true,
 }: any) {
   const colorScheme = useColorScheme();
+  const navigation = useNavigation();
+
   const styleForHistory = history
     ? {
         aspectRatio: 16 / 10,
@@ -23,7 +25,8 @@ export default function Card({
 
   const horizontalStyle = horizontal ? { height: 90 } : { width: "100%" };
   return (
-    <TouchableHighlight onPress={() => alert("hiii")}>
+    // @ts-ignore
+    <TouchableHighlight onPress={() => navigation.navigate("play", { item })}>
       <View
         style={{
           marginBottom: horizontal ? 0 : 10,

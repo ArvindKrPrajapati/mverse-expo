@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { Text, View } from "../components/Themed";
 import ProtectedContainer from "../components/ProtectedContainer";
-import { Pressable, useColorScheme, Modal } from "react-native";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useColorScheme, Modal } from "react-native";
 import Colors from "../constants/Colors";
 import { useSnackbar } from "../Providers/SnackbarProvider";
 import { useNavigation } from "expo-router";
