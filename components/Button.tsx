@@ -1,11 +1,17 @@
 import React from "react";
-import { TouchableOpacity, Text, StyleSheet } from "react-native";
+import {
+  TouchableOpacity,
+  Text,
+  StyleSheet,
+  StyleProp,
+  ViewStyle,
+} from "react-native";
 import { LinearGradient } from "expo-linear-gradient"; // Import LinearGradient
 
 type Props = {
   disabled?: boolean;
   label: string;
-  style?: any; // Use StyleSheet.create for custom styles
+  style?: StyleProp<ViewStyle>;
   onPress?: () => void;
 };
 

@@ -24,7 +24,7 @@ const LogoButton = ({
           gap: 10,
           marginTop: 7,
           backgroundColor: Colors[colorScheme ?? "light"].secondary,
-          alignItems:"center"
+          alignItems: "center",
         },
         style,
       ]}
@@ -35,7 +35,7 @@ const LogoButton = ({
             name={icon}
             size={iconSize}
             color={textColor || Colors[colorScheme ?? "light"].text}
-            style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
+            style={{ opacity: pressed ? 0.5 : 1 }}
           />
           {label ? (
             <Text
