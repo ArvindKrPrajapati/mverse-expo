@@ -12,6 +12,7 @@ import LogoButton from "../LogoButton";
 import { formatTime } from "../../utils/common";
 import Slider from "@react-native-community/slider";
 import Colors from "../../constants/Colors";
+import MverseSlider from "./MverseSlider";
 
 const transparent = require("../../assets/images/transparent.png");
 
@@ -67,6 +68,15 @@ const MversePlayerControls = ({
   const hideControls = useCallback(() => {
     setVisible ? setVisible(false) : null;
   }, [visible]);
+
+  useEffect(() => {
+    if (visible && setVisible && isPlaying) {
+      const tm = setTimeout(() => {
+        setVisible(false);
+      }, 3000);
+      return () => clearTimeout(tm);
+    }
+  }, [visible, isPlaying]);
 
   if (!visible) {
     return null;
@@ -176,13 +186,10 @@ const MversePlayerControls = ({
             </Text>
           </View>
           {/* slider */}
-          <Slider
-            minimumValue={0}
-            value={duration && watched ? watched / duration : 0}
-            onValueChange={onSliderValueChange}
-            minimumTrackTintColor={Colors.dark.purple}
-            maximumTrackTintColor="#eee"
-            thumbTintColor={Colors.dark.purple}
+          <MverseSlider
+            duration={duration}
+            watched={watched}
+            onSliderValueChange={onSliderValueChange}
           />
           {/* </ImageBackground> */}
         </Animated.View>

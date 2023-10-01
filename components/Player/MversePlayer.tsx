@@ -1,4 +1,10 @@
-import { View, Text, Pressable, ActivityIndicator } from "react-native";
+import {
+  View,
+  Text,
+  Pressable,
+  ActivityIndicator,
+  Dimensions,
+} from "react-native";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
@@ -9,6 +15,9 @@ import Constants from "expo-constants";
 import MversePlayerControls from "./MversePlayerControls";
 import { useRouter } from "expo-router";
 import { useSnackbar } from "../../Providers/SnackbarProvider";
+import { Gesture, GestureDetector } from "react-native-gesture-handler";
+import MverseSlider from "./MverseSlider";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 type Props = {
   url: string;
@@ -20,6 +29,32 @@ const statusBarHeight = Constants.statusBarHeight;
 const autoPlay = true;
 
 const MversePlayer = ({ url, poster, title = url }: Props) => {
+  const [skip, setSkip] = useState({ forward: 0, backward: 0 });
+  // ######### gesture ##########
+  const doubleTap = Gesture.Tap()
+    .numberOfTaps(2)
+    .onStart(async (event) => {
+      //get the tap position on X
+      const touchX = event.absoluteX;
+      let mid = Dimensions.get("screen").width / 2;
+      const seconds = 10;
+      //if tap position is before the mid point, set video back by 10s
+      if (touchX < mid) {
+        setSkip({ forward: 0, backward: skip.backward + seconds });
+        await skipVideo(watched + seconds * -1000);
+      }
+      //if tap position is before the mid point, set video forward by 10s
+      else {
+        setSkip({ forward: skip.forward + seconds, backward: 0 });
+        await skipVideo(watched + seconds * 1000);
+      }
+    });
+
+  const singleTap = Gesture.Tap().onStart((event) => {
+    handleShowControl();
+  });
+
+  // ########## end ###############
   const [isPortrait, setIsPortrait] = useState(true);
   const [isBuffering, setIsBuffering] = useState(true);
   const videoRef = useRef<Video>(null);
@@ -59,10 +94,18 @@ const MversePlayer = ({ url, poster, title = url }: Props) => {
 
     setWatched(e.positionMillis);
     if (e.isPlaying !== undefined) {
-      setIsPlaying(e.isPlaying);
+      if (!e.isBuffering) {
+        setIsPlaying(e.isPlaying);
+      }
     }
   };
 
+  useEffect(() => {
+    const tm = setTimeout(() => {
+      setSkip({ forward: 0, backward: 0 });
+    }, 400);
+    return () => clearTimeout(tm);
+  }, [skip]);
   const onReadyForDisplay = (e: any) => {};
 
   const playPause = async () => {
@@ -86,9 +129,6 @@ const MversePlayer = ({ url, poster, title = url }: Props) => {
     setShowControls(true);
   };
 
-  const skipForward = async (seconds = 10) => {
-    await skipVideo(watched + seconds * 1000);
-  };
   const skipVideo = async (miliSeconds = 0) => {
     if (videoRef.current) {
       if (miliSeconds < duration) {
@@ -104,26 +144,98 @@ const MversePlayer = ({ url, poster, title = url }: Props) => {
   return (
     <SafeAreaView
       style={[
-        { width: "100%" },
+        { width: "100%", zIndex: 20 },
         isPortrait ? { aspectRatio: 16 / 10 } : { height: "100%" },
       ]}
     >
       <StatusBar hidden={!isPortrait} />
-      <Pressable
-        onPress={handleShowControl}
-        onLongPress={() => skipForward(600)}
-        style={{
-          position: "absolute",
-          zIndex: 5,
-          width: "100%",
-          height: "100%",
-          marginTop: isPortrait ? statusBarHeight : 0,
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        {isBuffering ? <ActivityIndicator size={50} color="#eee" /> : null}
-      </Pressable>
+      <GestureDetector gesture={Gesture.Exclusive(doubleTap, singleTap)}>
+        <View
+          style={{
+            width: "100%",
+            height: "100%",
+            position: "absolute",
+            zIndex: 5,
+            marginTop: isPortrait ? statusBarHeight : 0,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              width: "80%",
+              alignItems: "center",
+            }}
+          >
+            <View
+              style={{
+                width: 40,
+                flexDirection: "row",
+                justifyContent: "center",
+                gap: 5,
+                alignItems: "center",
+              }}
+            >
+              {skip.backward ? (
+                <>
+                  <MaterialCommunityIcons
+                    name="rewind"
+                    color="#eee"
+                    size={30}
+                  />
+                  <Text style={{ color: "#eee", fontWeight: "900" }}>
+                    {skip.backward}
+                  </Text>
+                </>
+              ) : null}
+            </View>
+            <View style={{ width: 50 }}>
+              {isBuffering ? (
+                <ActivityIndicator size={50} color="#eee" />
+              ) : null}
+            </View>
+            <View
+              style={{
+                width: 40,
+                flexDirection: "row",
+                justifyContent: "center",
+                gap: 5,
+                alignItems: "center",
+              }}
+            >
+              {skip.forward ? (
+                <>
+                  <Text style={{ color: "#eee", fontWeight: "900" }}>
+                    {skip.forward}
+                  </Text>
+
+                  <MaterialCommunityIcons
+                    name="fast-forward"
+                    color="#eee"
+                    size={30}
+                  />
+                </>
+              ) : null}
+            </View>
+          </View>
+        </View>
+      </GestureDetector>
+      {isPortrait && !showControls ? (
+        <MverseSlider
+          duration={duration}
+          watched={watched}
+          onSliderValueChange={onSliderValueChange}
+          style={{
+            position: "absolute",
+            bottom: -10,
+            zIndex: 9,
+            left: -16,
+            width: Dimensions.get("window").width + 31,
+          }}
+        />
+      ) : null}
       <MversePlayerControls
         containerStyle={{
           width: "100%",
