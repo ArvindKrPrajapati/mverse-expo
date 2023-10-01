@@ -4,6 +4,7 @@ import {
   Pressable,
   ActivityIndicator,
   Dimensions,
+  Animated,
 } from "react-native";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -15,7 +16,14 @@ import Constants from "expo-constants";
 import MversePlayerControls from "./MversePlayerControls";
 import { useRouter } from "expo-router";
 import { useSnackbar } from "../../Providers/SnackbarProvider";
-import { Gesture, GestureDetector } from "react-native-gesture-handler";
+import {
+  Gesture,
+  GestureDetector,
+  HandlerStateChangeEvent,
+  PinchGestureHandler,
+  PinchGestureHandlerEventPayload,
+  State,
+} from "react-native-gesture-handler";
 import MverseSlider from "./MverseSlider";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
@@ -35,6 +43,7 @@ const MversePlayer = ({ url, poster, title = url }: Props) => {
     .numberOfTaps(2)
     .onStart(async (event) => {
       //get the tap position on X
+      if (!videoRef) return;
       const touchX = event.absoluteX;
       let mid = Dimensions.get("screen").width / 2;
       const seconds = 10;
@@ -63,7 +72,7 @@ const MversePlayer = ({ url, poster, title = url }: Props) => {
   const [isMute, setIsMute] = useState(false);
   const [duration, setDuration] = useState(0);
   const [watched, setWatched] = useState(0);
-
+  const [videoMode, setVideoMode] = useState<any>("CONTAIN");
   const router = useRouter();
   const { showErrorSnackbar } = useSnackbar();
   const changeOrientation = useCallback(async () => {
@@ -141,6 +150,41 @@ const MversePlayer = ({ url, poster, title = url }: Props) => {
     setWatched(Math.round(e * duration));
     await skipVideo(e * duration);
   };
+
+  // ############### pinch handler ###############
+  const pinchScale = useRef(new Animated.Value(1));
+  const baseScale = useRef(1);
+
+  const onPinchEvent = Animated.event(
+    [{ nativeEvent: { scale: pinchScale.current } }],
+    { useNativeDriver: false }
+  );
+
+  const onPinchStateChange = (
+    event: HandlerStateChangeEvent<PinchGestureHandlerEventPayload>
+  ) => {
+    if (event.nativeEvent.oldState === State.ACTIVE) {
+      const distance = Math.round(event.nativeEvent.scale);
+      if (distance >= 1) {
+        switch (videoMode) {
+          case "CONTAIN":
+            setVideoMode("STRETCH");
+            break;
+          case "STRETCH":
+            setVideoMode("COVER");
+            break;
+          case "COVER":
+            setVideoMode("CONTAIN");
+            break;
+          default:
+            setVideoMode("CONTAIN");
+            break;
+        }
+      } else {
+        setVideoMode("CONTAIN");
+      }
+    }
+  };
   return (
     <SafeAreaView
       style={[
@@ -150,77 +194,82 @@ const MversePlayer = ({ url, poster, title = url }: Props) => {
     >
       <StatusBar hidden={!isPortrait} />
       <GestureDetector gesture={Gesture.Exclusive(doubleTap, singleTap)}>
-        <View
-          style={{
-            width: "100%",
-            height: "100%",
-            position: "absolute",
-            zIndex: 5,
-            marginTop: isPortrait ? statusBarHeight : 0,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
+        <PinchGestureHandler
+          onGestureEvent={onPinchEvent}
+          onHandlerStateChange={onPinchStateChange}
         >
           <View
             style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              width: "80%",
+              width: "100%",
+              height: "100%",
+              position: "absolute",
+              zIndex: 5,
+              marginTop: isPortrait ? statusBarHeight : 0,
+              justifyContent: "center",
               alignItems: "center",
             }}
           >
             <View
               style={{
-                width: 40,
                 flexDirection: "row",
-                justifyContent: "center",
-                gap: 5,
+                justifyContent: "space-between",
+                width: "80%",
                 alignItems: "center",
               }}
             >
-              {skip.backward ? (
-                <>
-                  <MaterialCommunityIcons
-                    name="rewind"
-                    color="#eee"
-                    size={30}
-                  />
-                  <Text style={{ color: "#eee", fontWeight: "900" }}>
-                    {skip.backward}
-                  </Text>
-                </>
-              ) : null}
-            </View>
-            <View style={{ width: 50 }}>
-              {isBuffering ? (
-                <ActivityIndicator size={50} color="#eee" />
-              ) : null}
-            </View>
-            <View
-              style={{
-                width: 40,
-                flexDirection: "row",
-                justifyContent: "center",
-                gap: 5,
-                alignItems: "center",
-              }}
-            >
-              {skip.forward ? (
-                <>
-                  <Text style={{ color: "#eee", fontWeight: "900" }}>
-                    {skip.forward}
-                  </Text>
+              <View
+                style={{
+                  width: 40,
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  gap: 5,
+                  alignItems: "center",
+                }}
+              >
+                {skip.backward ? (
+                  <>
+                    <MaterialCommunityIcons
+                      name="rewind"
+                      color="#eee"
+                      size={30}
+                    />
+                    <Text style={{ color: "#eee", fontWeight: "900" }}>
+                      {skip.backward}
+                    </Text>
+                  </>
+                ) : null}
+              </View>
+              <View style={{ width: 50 }}>
+                {isBuffering ? (
+                  <ActivityIndicator size={50} color="#eee" />
+                ) : null}
+              </View>
+              <View
+                style={{
+                  width: 40,
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  gap: 5,
+                  alignItems: "center",
+                }}
+              >
+                {skip.forward ? (
+                  <>
+                    <Text style={{ color: "#eee", fontWeight: "900" }}>
+                      {skip.forward}
+                    </Text>
 
-                  <MaterialCommunityIcons
-                    name="fast-forward"
-                    color="#eee"
-                    size={30}
-                  />
-                </>
-              ) : null}
+                    <MaterialCommunityIcons
+                      name="fast-forward"
+                      color="#eee"
+                      size={30}
+                    />
+                  </>
+                ) : null}
+              </View>
             </View>
           </View>
-        </View>
+        </PinchGestureHandler>
       </GestureDetector>
       {isPortrait && !showControls ? (
         <MverseSlider
@@ -263,7 +312,8 @@ const MversePlayer = ({ url, poster, title = url }: Props) => {
         ref={videoRef}
         videoStyle={{ backgroundColor: "black" }}
         style={{ width: "100%", height: "100%" }}
-        resizeMode={ResizeMode.CONTAIN}
+        // @ts-ignore
+        resizeMode={ResizeMode[videoMode]}
         source={{
           uri: url,
         }}
