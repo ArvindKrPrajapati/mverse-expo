@@ -9,8 +9,11 @@ import LogoButton from "../components/LogoButton";
 import { formatDate, handleNumbers } from "../utils/common";
 import GenerateUserPicture from "../components/GenerateUserPicture";
 import { useSnackbar } from "../Providers/SnackbarProvider";
-import { mverseGet } from "../service/api.service";
+import { mverseGet, mversePatch } from "../service/api.service";
 import CardSkeleton from "../components/SkeletonLoader/CardSkeleton";
+import { useAuth } from "../Providers/AuthProvider";
+import { Link, useRouter } from "expo-router";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 const orientationEnum = [
   "UNKNOWN",
@@ -24,7 +27,27 @@ const limit = 10;
 const PlayPage = () => {
   const route = useRoute();
   // @ts-ignore
-  const item = route.params.item || null;
+  const i = route.params.item || null;
+  const [item, setItem] = useState(i);
+  const [videoLoading, setVideoLoading] = useState(true);
+
+  const getVideo = async () => {
+    try {
+      const res = await mverseGet("/api/video/" + i._id);
+      if (res.success) {
+        setItem(res.data);
+      } else {
+        showErrorSnackbar(res.error);
+      }
+    } catch (error: any) {
+      showErrorSnackbar(error.message);
+    } finally {
+      setVideoLoading(false);
+    }
+  };
+  useEffect(() => {
+    getVideo();
+  }, []);
   const colorScheme = useColorScheme();
 
   const [skip, setSkip] = useState(0);
@@ -72,7 +95,7 @@ const PlayPage = () => {
   const renderItem = ({ item: obj, index }: any) => {
     return obj == 1 ? (
       <>
-        <ChannelDescription item={item} />
+        <ChannelDescription username={i.by.username} />
         {loading ? <CardSkeleton horizontal={false} size={3} /> : null}
       </>
     ) : (
@@ -81,11 +104,7 @@ const PlayPage = () => {
   };
   return (
     <>
-      <MversePlayer
-        url={item.link}
-        poster={item.thumbnail}
-        title={item.title}
-      />
+      <MversePlayer url={i.link} poster={i.thumbnail} title={item.title} />
       <FlatList
         style={{ paddingBottom: 20 }}
         contentContainerStyle={{ flexGrow: 1 }}
@@ -140,7 +159,72 @@ const PlayPage = () => {
   );
 };
 
-const ChannelDescription = ({ item }: any) => {
+const ChannelDescription = ({ username }: any) => {
+  const [user, setUser] = useState<any>({});
+  const [userLoading, setUserLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const currentUser = useAuth();
+  const { showErrorSnackbar, showSuccessSnackbar } = useSnackbar();
+  const router = useRouter();
+
+  const _init = async () => {
+    try {
+      const res = await mverseGet("/api/user/channel/" + username);
+      if (res.success) {
+        setUser(res.data);
+      } else {
+        showErrorSnackbar(res.error);
+      }
+    } catch (error: any) {
+      showErrorSnackbar(error.message);
+    } finally {
+      setUserLoading(false);
+    }
+  };
+  useEffect(() => {
+    _init();
+  }, []);
+
+  const handleClick = async () => {
+    if (loading) return;
+    try {
+      setLoading(true);
+      if (!currentUser.user) {
+        showErrorSnackbar("login to subscribe");
+        setLoading(false);
+        router.push("/login");
+        return;
+      }
+      const res = await mversePatch(
+        "/api/user/channel/" + currentUser.user.username,
+        {}
+      );
+      if (res.success) {
+        if (res.data.message == "unsubscribed") {
+          setUser({
+            ...user,
+            isSubscribed: false,
+            subscribers: user.subscribers - 1,
+          });
+        }
+        if (res.data.message == "subscribed") {
+          setUser({
+            ...user,
+            isSubscribed: true,
+            subscribers: user.subscribers + 1,
+          });
+        }
+
+        showSuccessSnackbar(res.data.message);
+      } else {
+        showErrorSnackbar(res.error);
+      }
+      setLoading(false);
+    } catch (error: any) {
+      setLoading(false);
+      showErrorSnackbar(error.message);
+    }
+  };
   return (
     <View
       style={{
@@ -148,22 +232,31 @@ const ChannelDescription = ({ item }: any) => {
         alignItems: "center",
         paddingVertical: 10,
         justifyContent: "space-between",
-        paddingHorizontal: 5,
+        paddingHorizontal: 10,
       }}
     >
       <View style={{ flexDirection: "row", alignItems: "center", gap: 15 }}>
-        <GenerateUserPicture user={item.by} size={35} />
+        <Link href={`/profile/${username}`}>
+          <TouchableOpacity>
+            <GenerateUserPicture user={user} size={35} />
+          </TouchableOpacity>
+        </Link>
         <View>
-          <Text numberOfLines={1}>{item.by.channelName}</Text>
-          <Text style={{ fontSize: 12 }}>
-            {handleNumbers(2000)} subscribers
-          </Text>
+          <Text numberOfLines={1}>{user.channelName}</Text>
+          {!userLoading ? (
+            <Text style={{ fontSize: 12 }}>
+              {handleNumbers(user.subscribers)} subscribers
+            </Text>
+          ) : null}
         </View>
       </View>
-      <LogoButton
-        label="subscribe"
-        style={{ borderRadius: 100, paddingHorizontal: 20 }}
-      />
+      {!userLoading ? (
+        <LogoButton
+          onPress={handleClick}
+          label={user.isSubscribed ? "unsubscribe" : "subscribe"}
+          style={{ borderRadius: 100, paddingHorizontal: 20 }}
+        />
+      ) : null}
     </View>
   );
 };
