@@ -8,6 +8,7 @@ import Button from "../Button";
 import Constants from "expo-constants";
 import MversePlayerControls from "./MversePlayerControls";
 import { useRouter } from "expo-router";
+import { useSnackbar } from "../../Providers/SnackbarProvider";
 
 type Props = {
   url: string;
@@ -29,7 +30,7 @@ const MversePlayer = ({ url, poster, title = url }: Props) => {
   const [watched, setWatched] = useState(0);
 
   const router = useRouter();
-
+  const { showErrorSnackbar } = useSnackbar();
   const changeOrientation = useCallback(async () => {
     if (isPortrait) {
       await ScreenOrientation.lockAsync(
@@ -48,6 +49,9 @@ const MversePlayer = ({ url, poster, title = url }: Props) => {
 
   const onLoad = (e: any) => {
     setDuration(e.durationMillis);
+  };
+  const onError = (e: any) => {
+    showErrorSnackbar(e || "Something went wrong");
   };
 
   const onPlaybackStatusUpdate = (e: any) => {
@@ -159,6 +163,7 @@ const MversePlayer = ({ url, poster, title = url }: Props) => {
         onLoad={onLoad}
         onPlaybackStatusUpdate={onPlaybackStatusUpdate}
         onReadyForDisplay={onReadyForDisplay}
+        onError={onError}
         isMuted={isMute}
       />
     </SafeAreaView>
