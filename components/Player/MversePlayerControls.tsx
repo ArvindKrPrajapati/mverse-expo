@@ -68,15 +68,6 @@ const MversePlayerControls = ({
     setVisible ? setVisible(false) : null;
   }, [visible]);
 
-  //   useEffect(() => {
-  //     if (visible && setVisible && isPlaying) {
-  //       const tm = setTimeout(() => {
-  //         setVisible(false);
-  //       }, 3000);
-  //       return () => clearTimeout(tm);
-  //     }
-  //   }, [visible, isPlaying]);
-
   if (!visible) {
     return null;
   }
@@ -187,11 +178,11 @@ const MversePlayerControls = ({
           {/* slider */}
           <Slider
             minimumValue={0}
-            value={watched / duration}
+            value={duration && watched ? watched / duration : 0}
             onValueChange={onSliderValueChange}
-            minimumTrackTintColor={Colors.dark.purple} // Color of the current position
-            maximumTrackTintColor="#eee" // Color of the buffered portion
-            thumbTintColor={Colors.dark.purple} // Color of the slider thumb
+            minimumTrackTintColor={Colors.dark.purple}
+            maximumTrackTintColor="#eee"
+            thumbTintColor={Colors.dark.purple}
           />
           {/* </ImageBackground> */}
         </Animated.View>

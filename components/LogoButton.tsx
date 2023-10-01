@@ -12,7 +12,7 @@ import { Text } from "./Themed";
 type Props = {
   label?: string;
   icon?: any;
-  onPress?: () => void;
+  onPress?: any;
   textColor?: string;
   style?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;
