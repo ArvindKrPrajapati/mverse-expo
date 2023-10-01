@@ -1,16 +1,34 @@
-import { Pressable, useColorScheme } from "react-native";
+import {
+  Pressable,
+  useColorScheme,
+  ViewStyle,
+  StyleProp,
+  TextStyle,
+} from "react-native";
 import Colors from "../constants/Colors";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Text } from "./Themed";
 
+type Props = {
+  label?: string;
+  icon?: any;
+  onPress?: () => void;
+  textColor?: string;
+  style?: StyleProp<ViewStyle>;
+  textStyle?: StyleProp<TextStyle>;
+  iconSize?: number;
+  numberOfLines?: number;
+};
 const LogoButton = ({
   label,
   icon,
   onPress,
   textColor,
   style,
+  textStyle,
   iconSize = 20,
-}: any) => {
+  numberOfLines,
+}: Props) => {
   const colorScheme = useColorScheme();
 
   return (
@@ -31,18 +49,24 @@ const LogoButton = ({
     >
       {({ pressed }) => (
         <>
-          <MaterialCommunityIcons
-            name={icon}
-            size={iconSize}
-            color={textColor || Colors[colorScheme ?? "light"].text}
-            style={{ opacity: pressed ? 0.5 : 1 }}
-          />
+          {icon ? (
+            <MaterialCommunityIcons
+              name={icon}
+              size={iconSize}
+              color={textColor || Colors[colorScheme ?? "light"].text}
+              style={{ opacity: pressed ? 0.5 : 1 }}
+            />
+          ) : null}
           {label ? (
             <Text
-              style={{
-                color: textColor || Colors[colorScheme ?? "light"].text,
-                opacity: pressed ? 0.5 : 1,
-              }}
+              numberOfLines={numberOfLines}
+              style={[
+                {
+                  color: textColor || Colors[colorScheme ?? "light"].text,
+                  opacity: pressed ? 0.5 : 1,
+                },
+                textStyle,
+              ]}
             >
               {label}
             </Text>
