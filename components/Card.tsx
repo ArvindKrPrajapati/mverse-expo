@@ -13,6 +13,7 @@ export default function Card({
   item,
   history = false,
   horizontal = true,
+  replace = false,
 }: any) {
   const colorScheme = useColorScheme();
   const navigation = useNavigation();
@@ -25,8 +26,17 @@ export default function Card({
 
   const horizontalStyle = horizontal ? { height: 90 } : { width: "100%" };
   return (
-    // @ts-ignore
-    <TouchableHighlight onPress={() => navigation.navigate("play", { item })}>
+    <TouchableHighlight
+      onPress={() => {
+        if (replace) {
+          // @ts-ignore
+          navigation.replace("play", { item });
+        } else {
+          // @ts-ignore
+          navigation.push("play", { item });
+        }
+      }}
+    >
       <View
         style={{
           marginBottom: horizontal ? 0 : 10,

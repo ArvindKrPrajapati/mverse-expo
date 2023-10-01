@@ -99,7 +99,7 @@ const PlayPage = () => {
         {loading ? <CardSkeleton horizontal={false} size={3} /> : null}
       </>
     ) : (
-      <Card item={obj} horizontal={false} />
+      <Card item={obj} horizontal={false} replace={true} />
     );
   };
   return (
@@ -167,6 +167,8 @@ const ChannelDescription = ({ username }: any) => {
   const { showErrorSnackbar, showSuccessSnackbar } = useSnackbar();
   const router = useRouter();
 
+  const colorScheme = useColorScheme();
+
   const _init = async () => {
     try {
       const res = await mverseGet("/api/user/channel/" + username);
@@ -186,7 +188,7 @@ const ChannelDescription = ({ username }: any) => {
   }, []);
 
   const handleClick = async () => {
-    if (loading) return;
+    if (loading || userLoading) return;
     try {
       setLoading(true);
       if (!currentUser.user) {
@@ -242,21 +244,41 @@ const ChannelDescription = ({ username }: any) => {
           </TouchableOpacity>
         </Link>
         <View>
-          <Text numberOfLines={1}>{user.channelName}</Text>
           {!userLoading ? (
-            <Text style={{ fontSize: 12 }}>
-              {handleNumbers(user.subscribers)} subscribers
-            </Text>
-          ) : null}
+            <>
+              <Text numberOfLines={1}>{user.channelName}</Text>
+              <Text style={{ fontSize: 12 }}>
+                {handleNumbers(user.subscribers)} subscribers
+              </Text>
+            </>
+          ) : (
+            <>
+              <View
+                style={{
+                  paddingHorizontal: 50,
+                  paddingVertical: 5,
+                  marginVertical: 5,
+                  backgroundColor: Colors[colorScheme ?? "light"].secondary,
+                }}
+              ></View>
+              <View
+                style={{
+                  width: 40,
+                  paddingVertical: 5,
+                  backgroundColor: Colors[colorScheme ?? "light"].secondary,
+                }}
+              ></View>
+            </>
+          )}
         </View>
       </View>
-      {!userLoading ? (
-        <LogoButton
-          onPress={handleClick}
-          label={user.isSubscribed ? "unsubscribe" : "subscribe"}
-          style={{ borderRadius: 100, paddingHorizontal: 20 }}
-        />
-      ) : null}
+      <LogoButton
+        onPress={handleClick}
+        label={
+          userLoading ? " " : user.isSubscribed ? "unsubscribe" : "subscribe"
+        }
+        style={{ borderRadius: 100, paddingHorizontal: userLoading ? 50 : 20 }}
+      />
     </View>
   );
 };
