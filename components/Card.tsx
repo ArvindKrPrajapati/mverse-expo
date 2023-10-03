@@ -82,7 +82,7 @@ export default function Card({
         >
           {!horizontal ? (
             <View style={{ marginHorizontal: 5 }}>
-              <Link href={`/profile/${item.by.username}`}>
+              <Link href={`/user`}>
                 <TouchableHighlight>
                   <GenerateUserPicture size={35} user={item.by} />
                 </TouchableHighlight>
