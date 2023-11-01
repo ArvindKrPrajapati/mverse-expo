@@ -3,7 +3,9 @@ import {
   useColorScheme,
   ViewStyle,
   StyleProp,
+  View,
   TextStyle,
+  ActivityIndicator,
 } from "react-native";
 import Colors from "../constants/Colors";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -18,6 +20,8 @@ type Props = {
   textStyle?: StyleProp<TextStyle>;
   iconSize?: number;
   numberOfLines?: number;
+  rightIcon?: any;
+  loading?: boolean;
 };
 const LogoButton = ({
   label,
@@ -28,6 +32,8 @@ const LogoButton = ({
   textStyle,
   iconSize = 20,
   numberOfLines,
+  rightIcon,
+  loading = false,
 }: Props) => {
   const colorScheme = useColorScheme();
 
@@ -57,6 +63,9 @@ const LogoButton = ({
               style={{ opacity: pressed ? 0.5 : 1 }}
             />
           ) : null}
+          {loading ? (
+            <ActivityIndicator size={iconSize} color={Colors.dark.purple} />
+          ) : null}
           {label ? (
             <Text
               numberOfLines={numberOfLines}
@@ -70,6 +79,16 @@ const LogoButton = ({
             >
               {label}
             </Text>
+          ) : null}
+          {rightIcon ? (
+            <View style={{ alignItems: "flex-end" }}>
+              <MaterialCommunityIcons
+                name={rightIcon}
+                size={iconSize}
+                color={textColor || Colors[colorScheme ?? "light"].text}
+                style={{ opacity: pressed ? 0.5 : 1 }}
+              />
+            </View>
           ) : null}
         </>
       )}
