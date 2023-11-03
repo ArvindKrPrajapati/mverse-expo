@@ -28,6 +28,7 @@ export default function Home() {
     try {
       setLoading(showLoader);
       setLoadMoreLoading(true);
+console.log(skip);
 
       const res = await mverseGet(
         "/api/video?limit=" + limit + "&skip=" + skip
@@ -71,16 +72,17 @@ export default function Home() {
   if (loading) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <CardSkeleton horizontal={false}/>
+        <CardSkeleton horizontal={false} />
       </View>
     );
   }
 
   return (
     <FlatList
+      showsHorizontalScrollIndicator={false}
+      showsVerticalScrollIndicator={false}
       ListEmptyComponent={<NotFound message="No video found" />}
       contentContainerStyle={{ flexGrow: 1 }}
-      style={{ paddingVertical: 10, paddingBottom: 20 }}
       data={data}
       renderItem={({ item }: any) => <Card horizontal={false} item={item} />}
       onEndReached={loadMore}
@@ -90,7 +92,7 @@ export default function Home() {
           <ActivityIndicator
             size={40}
             color={Colors.dark.purple}
-            style={{ marginBottom: 30 }}
+            style={{ marginBottom: 30 ,marginTop:15}}
           />
         ) : null
       }

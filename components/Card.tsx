@@ -39,7 +39,6 @@ export default function Card({
     >
       <View
         style={{
-          marginBottom: horizontal ? 0 : 10,
           padding: horizontal ? 10 : 0,
           flexDirection: history || !horizontal ? "column" : "row",
         }}
@@ -52,6 +51,7 @@ export default function Card({
               width: "100%",
               height: "100%",
               borderRadius: horizontal ? 5 : 0,
+              backgroundColor:Colors[colorScheme ?? "dark"].secondary
             }}
             resizeMode="stretch"
           />
@@ -81,7 +81,7 @@ export default function Card({
           ]}
         >
           {!horizontal ? (
-            <View style={{ marginHorizontal: 5 }}>
+            <View style={{ marginHorizontal: 8,paddingBottom:10 }}>
               <Link href={`/profile/${item.by.username}`}>
                 <TouchableHighlight>
                   <GenerateUserPicture size={35} user={item.by} />

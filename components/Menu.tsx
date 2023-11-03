@@ -25,7 +25,7 @@ const Menu = ({ style }: any) => {
   return (
     <>
       <Modal
-        animationType="slide"
+        animationType="fade"
         transparent={true}
         visible={isVisible}
         onRequestClose={() => setIsVisible(false)}
@@ -35,14 +35,14 @@ const Menu = ({ style }: any) => {
           style={{
             flexDirection: "column",
             flex: 1,
-            backgroundColor: "rgba(0,0,0,0.8)",
+            backgroundColor: "rgba(0,0,0,0.5)",
           }}
         >
           <Pressable
             onPress={() => setIsVisible(false)}
             style={{ flexGrow: 1 }}
           ></Pressable>
-          <View style={{ padding: 20 }}>
+          <View style={{ padding: 10,backgroundColor:Colors[colorScheme ?? "light"].secondary }}>
             <View
               style={{
                 backgroundColor: Colors[colorScheme ?? "light"].secondary,
@@ -93,7 +93,7 @@ const Menu = ({ style }: any) => {
         {({ pressed }) => (
           <MaterialCommunityIcons
             name="dots-vertical"
-            size={25}
+            size={24}
             color={Colors[colorScheme ?? "light"].text}
             style={[{ marginRight: 15, opacity: pressed ? 0.5 : 1 }, style]}
           />

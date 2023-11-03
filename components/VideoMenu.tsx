@@ -93,7 +93,7 @@ const VideoMenu = ({ _id }: any) => {
       ) : null}
 
       <Modal
-        animationType="slide"
+        animationType="fade"
         transparent={true}
         visible={isVisible}
         onRequestClose={() => setIsVisible(false)}
@@ -103,7 +103,7 @@ const VideoMenu = ({ _id }: any) => {
           style={{
             flexDirection: "column",
             flex: 1,
-            backgroundColor: "rgba(0,0,0,0.8)",
+            backgroundColor: "rgba(0,0,0,0.5)",
           }}
         >
           <Pressable
@@ -179,20 +179,12 @@ const VideoMenu = ({ _id }: any) => {
               >
                 {({ pressed }) => (
                   <>
-                    {loading ? (
-                      <ActivityIndicator
-                        size={25}
-                        color={Colors.dark.purple}
-                        style={{ marginRight: 15 }}
-                      />
-                    ) : (
-                      <MaterialCommunityIcons
-                        name="share-outline"
-                        size={25}
-                        color={Colors[colorScheme ?? "light"].text}
-                        style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
-                      />
-                    )}
+                    <MaterialCommunityIcons
+                      name="share-outline"
+                      size={25}
+                      color={Colors[colorScheme ?? "light"].text}
+                      style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
+                    />
                     <Text
                       style={{
                         color: Colors[colorScheme ?? "light"].text,
@@ -209,6 +201,7 @@ const VideoMenu = ({ _id }: any) => {
         </View>
       </Modal>
       <TouchableHighlight
+        underlayColor="transparent"
         style={{ width: 30 }}
         onPress={() => {
           setIsVisible(true);

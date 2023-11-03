@@ -16,7 +16,7 @@ function TabBarIcon(props: {
   color: string;
 }) {
   return (
-    <MaterialCommunityIcons size={24} style={{ marginBottom: -7 }} {...props} />
+    <MaterialCommunityIcons size={26} style={{ marginBottom: -8 }} {...props} />
   );
 }
 
@@ -28,13 +28,21 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
-        tabBarStyle: { paddingBottom: 7, height: 55 },
+        tabBarStyle: {
+          paddingBottom: 12,
+          height: 63,
+          paddingTop: 7,
+          backgroundColor: Colors[colorScheme ?? "dark"].background,
+        },
         headerTitleContainerStyle: { display: "none" },
         headerRightContainerStyle: {
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "flex-end",
           gap: 3,
+        },
+        headerStyle: {
+          backgroundColor: Colors[colorScheme ?? "dark"].background,
         },
         headerRight: () => (
           <>
@@ -43,9 +51,9 @@ export default function TabLayout() {
                 {({ pressed }) => (
                   <FontAwesome
                     name="search"
-                    size={20}
+                    size={18}
                     color={Colors[colorScheme ?? "light"].text}
-                    style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
+                    style={{ marginRight: 17, opacity: pressed ? 0.5 : 1 }}
                   />
                 )}
               </Pressable>
@@ -64,7 +72,7 @@ export default function TabLayout() {
                     {({ pressed }) => (
                       <GenerateUserPicture
                         user={user}
-                        size={25}
+                        size={23}
                         style={{
                           marginRight: 15,
                           opacity: pressed ? 0.5 : 1,
@@ -90,17 +98,16 @@ export default function TabLayout() {
                 </Link>
               </>
             )}
-            {user ? <Menu />:null}
+            {user ? <Menu /> : null}
           </>
         ),
         headerLeft: () => (
           <Image
-            source={colorScheme == "dark" ? darkLogo : logo}
+            source={logo}
             style={{
-              height: 50,
+              height: 60,
               resizeMode: "contain",
-              width: colorScheme == "dark" ? 100 : 120,
-              marginLeft: 10,
+              width: 130,
             }}
           />
         ),
@@ -111,15 +118,6 @@ export default function TabLayout() {
         options={{
           title: "Home",
           tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="blogs"
-        options={{
-          title: "Blogs",
-          tabBarIcon: ({ color }) => (
-            <TabBarIcon name="newspaper-variant-outline" color={color} />
-          ),
         }}
       />
       <Tabs.Screen

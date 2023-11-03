@@ -14,6 +14,7 @@ import { Text } from "../components/Themed";
 import Menu from "../components/Menu";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Colors from "../constants/Colors";
+import { StatusBar } from "expo-status-bar";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -62,9 +63,9 @@ function RootLayoutNav() {
         <ThemeProvider
           value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
         >
+          <StatusBar backgroundColor={Colors[colorScheme ?? 'dark'].background}/>
           <Stack screenOptions={{ animation: "slide_from_right" }}>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="user" />
             <Stack.Screen
               name="login"
               options={{

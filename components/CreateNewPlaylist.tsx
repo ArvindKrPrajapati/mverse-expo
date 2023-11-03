@@ -16,9 +16,10 @@ const CreateNewPlaylist = ({ isVisible, setIsVisible, videoId }: any) => {
   const { showErrorSnackbar, showSuccessSnackbar } = useSnackbar();
 
   async function handleSubmit() {
+    if (!name) return;
+
     try {
       setLoading(true);
-      if (!name) return;
       const obj = {
         name,
         isPrivate,
@@ -40,7 +41,7 @@ const CreateNewPlaylist = ({ isVisible, setIsVisible, videoId }: any) => {
 
   return (
     <Modal
-      animationType="slide"
+      animationType="fade"
       transparent={true}
       visible={isVisible}
       onRequestClose={() => setIsVisible(false)}
@@ -49,7 +50,7 @@ const CreateNewPlaylist = ({ isVisible, setIsVisible, videoId }: any) => {
       <View
         style={{
           flex: 1,
-          backgroundColor: "rgba(0,0,0,0.8)",
+          backgroundColor: "rgba(0,0,0,0.5)",
           justifyContent: "center",
           alignItems: "center",
         }}
@@ -62,7 +63,7 @@ const CreateNewPlaylist = ({ isVisible, setIsVisible, videoId }: any) => {
             borderRadius: 5,
           }}
         >
-          <Text style={{ fontWeight: "100", fontSize: 18, marginBottom: 10 }}>
+          <Text style={{ fontWeight: "400", fontSize: 18, marginBottom: 10 }}>
             New Playlist
           </Text>
           <Input
@@ -70,6 +71,7 @@ const CreateNewPlaylist = ({ isVisible, setIsVisible, videoId }: any) => {
             label="Name"
             onChange={(e) => setName(e)}
             value={name}
+            labelStyle={{fontWeight:"400"}}
           />
           <RadioButton.Group
             onValueChange={(newValue) => setIsPrivate(newValue)}

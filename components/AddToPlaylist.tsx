@@ -97,14 +97,14 @@ const AddToPlaylist = ({ isVisible, setIsVisible, videoId,setNewPlaylistModal }:
           style={{
             flexDirection: "column",
             flex: 1,
-            backgroundColor: "rgba(0,0,0,0.8)",
+            backgroundColor: "rgba(0,0,0,0.2)",
           }}
         >
           <Pressable
             onPress={() => setIsVisible(false)}
             style={{ flexGrow: 1 }}
           ></Pressable>
-          <View style={{ padding: 2 }}>
+          <View>
             <View
               style={{
                 backgroundColor: Colors[colorScheme ?? "light"].secondary,
