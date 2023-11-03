@@ -3,7 +3,7 @@ import { useRoute } from "@react-navigation/native";
 import { Text, View } from "../components/Themed";
 import { useSnackbar } from "../Providers/SnackbarProvider";
 import { mverseGet } from "../service/api.service";
-import { ActivityIndicator } from "react-native";
+import { ActivityIndicator, useColorScheme } from "react-native";
 import Colors from "../constants/Colors";
 import NotFound from "../components/NotFound";
 import { FlatList } from "react-native";
@@ -19,6 +19,7 @@ const SearchPage = () => {
   const [data, setData] = useState<any>([]);
   const [end, setEnd] = useState(false);
   const { showErrorSnackbar, showSuccessSnackbar } = useSnackbar();
+  const colorScheme = useColorScheme();
 
   const _init = async (showLoader: boolean = false) => {
     try {
@@ -62,7 +63,11 @@ const SearchPage = () => {
   }
   return (
     <FlatList
-      style={{ paddingVertical: 10, paddingBottom: 20 }}
+      showsVerticalScrollIndicator={false}
+      style={{
+        paddingBottom: 20,
+        backgroundColor: Colors[colorScheme ?? "dark"].background,
+      }}
       data={data}
       renderItem={({ item }: any) => <Card horizontal={false} item={item} />}
       onEndReached={loadMore}

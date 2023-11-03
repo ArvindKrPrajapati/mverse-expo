@@ -22,7 +22,7 @@ const ProfileScreen = () => {
         },
         tabBarIndicatorStyle: { backgroundColor: Colors.dark.purple },
         tabBarItemStyle: {
-          width: 120,
+          width: 100,
         },
         tabBarAndroidRipple: {
           borderless: false,

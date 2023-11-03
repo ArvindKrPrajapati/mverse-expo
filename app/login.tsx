@@ -86,7 +86,7 @@ export default function LoginScreen() {
       if (res.success) {
         updateUser(res.data);
         await AsyncStorage.setItem("token", res.token);
-        showSuccessSnackbar("login successfully");
+        showSuccessSnackbar("login successfully", 2000, 70);
         const paramsToPass = {
           ...previousRouteParams,
           refresh: true,

@@ -28,7 +28,6 @@ export default function Home() {
     try {
       setLoading(showLoader);
       setLoadMoreLoading(true);
-console.log(skip);
 
       const res = await mverseGet(
         "/api/video?limit=" + limit + "&skip=" + skip
@@ -92,7 +91,7 @@ console.log(skip);
           <ActivityIndicator
             size={40}
             color={Colors.dark.purple}
-            style={{ marginBottom: 30 ,marginTop:15}}
+            style={{ marginBottom: 30, marginTop: 15 }}
           />
         ) : null
       }

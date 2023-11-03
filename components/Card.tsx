@@ -1,13 +1,14 @@
 import React from "react";
-import { Image, Pressable, useColorScheme } from "react-native";
+import { Image, Pressable, useColorScheme, View } from "react-native";
 // import { formatDate, formatTime, handleViews } from "../lib/common";
 import GenerateUserPicture from "./GenerateUserPicture";
-import { Text, View } from "./Themed";
+import { Text } from "./Themed";
 import { Link, useNavigation } from "expo-router";
 import { formatDate, formatTime, handleNumbers } from "../utils/common";
 import Colors from "../constants/Colors";
 import VideoMenu from "./VideoMenu";
 import { TouchableHighlight } from "react-native-gesture-handler";
+import { TouchableRipple } from "react-native-paper";
 
 export default function Card({
   item,
@@ -26,7 +27,10 @@ export default function Card({
 
   const horizontalStyle = horizontal ? { height: 90 } : { width: "100%" };
   return (
-    <TouchableHighlight
+    <TouchableRipple
+      rippleColor={
+        colorScheme == "dark" ? "rgba(0,0,0,0.5)" : "rgba(0,0,0,0.1)"
+      }
       onPress={() => {
         if (replace) {
           // @ts-ignore
@@ -51,7 +55,7 @@ export default function Card({
               width: "100%",
               height: "100%",
               borderRadius: horizontal ? 5 : 0,
-              backgroundColor:Colors[colorScheme ?? "dark"].secondary
+              backgroundColor: Colors[colorScheme ?? "dark"].secondary,
             }}
             resizeMode="stretch"
           />
@@ -81,7 +85,7 @@ export default function Card({
           ]}
         >
           {!horizontal ? (
-            <View style={{ marginHorizontal: 8,paddingBottom:10 }}>
+            <View style={{ marginHorizontal: 8, paddingBottom: 10 }}>
               <Link href={`/profile/${item.by.username}`}>
                 <TouchableHighlight>
                   <GenerateUserPicture size={35} user={item.by} />
@@ -126,6 +130,6 @@ export default function Card({
           <VideoMenu _id={item._id.toString()} />
         </View>
       </View>
-    </TouchableHighlight>
+    </TouchableRipple>
   );
 }

@@ -63,9 +63,18 @@ function RootLayoutNav() {
         <ThemeProvider
           value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
         >
-          <StatusBar backgroundColor={Colors[colorScheme ?? 'dark'].background}/>
-          <Stack screenOptions={{ animation: "slide_from_right" }}>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <StatusBar
+            backgroundColor={Colors[colorScheme ?? "dark"].background}
+          />
+          <Stack
+            screenOptions={{
+              animation: "slide_from_right",
+              headerStyle: {
+                backgroundColor: Colors[colorScheme ?? "dark"].background,
+              },
+            }}
+          >
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             <Stack.Screen
               name="login"
               options={{
@@ -135,6 +144,7 @@ function RootLayoutNav() {
                 title: route?.params?.username || "Profile",
                 headerShown: true,
                 animation: "slide_from_right",
+                headerShadowVisible: false,
                 headerRight: () => <Menu style={{ marginRight: 0 }} />,
               })}
             />
@@ -169,9 +179,9 @@ function RootLayoutNav() {
                       }
                       style={{
                         backgroundColor:
-                          Colors[colorScheme ?? "light"].secondary,
-                        padding: 6,
-                        paddingHorizontal: 10,
+                          colorScheme == "light" ? "#eee" : "#0D141D",
+                        padding: 8,
+                        paddingHorizontal: 15,
                         borderRadius: 50,
                         width: "70%",
                       }}

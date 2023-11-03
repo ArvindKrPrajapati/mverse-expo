@@ -25,7 +25,7 @@ export default function CardSkeleton({
 
   const horizontalStyle = horizontal ? { height: 90 } : { width: "100%" };
   return (
-    <View style={{ flex: 1, flexDirection: history ? "row" : "column" }}>
+    <View style={{ flex: 1, flexDirection: history ? "row" : "column" ,backgroundColor:Colors[colorScheme ?? "dark"].background}}>
       {Array.from(Array(size)).map((item, i) => (
         <View
           key={i}

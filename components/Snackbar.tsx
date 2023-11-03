@@ -6,8 +6,9 @@ import {
   Animated,
   TouchableOpacity,
 } from "react-native";
+import LogoButton from "./LogoButton";
 
-const Snackbar = ({ message, visible, type }: any) => {
+const Snackbar = ({ message, visible, type, setVisible, bottom = 15 }: any) => {
   const [translateY] = useState(new Animated.Value(100));
 
   useEffect(() => {
@@ -26,6 +27,13 @@ const Snackbar = ({ message, visible, type }: any) => {
     }
   }, [visible]);
 
+  const hideSnackbar = () => {
+    Animated.timing(translateY, {
+      toValue: 100,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
+  };
   // Define the background color based on the 'type' prop
   const backgroundColor =
     type === "error"
@@ -38,10 +46,23 @@ const Snackbar = ({ message, visible, type }: any) => {
     <Animated.View
       style={[
         styles.container,
-        { transform: [{ translateY }], backgroundColor },
+        { transform: [{ translateY }], bottom: bottom },
       ]}
     >
-      <Text style={styles.message}>{message}</Text>
+      <LogoButton
+        style={{
+          marginTop: 0,
+          flex: 1,
+          padding: 15,
+          paddingHorizontal: 18,
+          backgroundColor: backgroundColor,
+          justifyContent: "space-between",
+        }}
+        onPress={() => setVisible(false)}
+        rightIcon="close"
+        iconSize={15}
+        label={message}
+      />
     </Animated.View>
   );
 };
@@ -53,18 +74,6 @@ const styles = StyleSheet.create({
     left: 15,
     right: 15,
     borderRadius: 10,
-    paddingVertical: 13,
-    paddingHorizontal: 20,
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  message: {
-    flex: 1,
-    color: "white",
-  },
-  dismiss: {
-    color: "white",
-    fontWeight: "bold",
   },
 });
 

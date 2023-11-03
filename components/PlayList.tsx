@@ -4,16 +4,18 @@ import {
   FlatList,
   Image,
   StyleSheet,
+  View,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { useSnackbar } from "../Providers/SnackbarProvider";
-import { Text, View } from "./Themed";
+import { Text } from "./Themed";
 import { mverseGet } from "../service/api.service";
 import NotFound from "./NotFound";
 import Colors from "../constants/Colors";
 import { TouchableHighlight } from "react-native-gesture-handler";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import { TouchableRipple } from "react-native-paper";
 
 const limit = 20;
 const PlayList = ({ username = "" }: any) => {
@@ -24,6 +26,7 @@ const PlayList = ({ username = "" }: any) => {
   const [end, setEnd] = useState(false);
   const { showErrorSnackbar } = useSnackbar();
   const [refreshing, setRefreshing] = useState(false);
+  const colorScheme = useColorScheme();
 
   const _init = async (showLoader: boolean = false) => {
     try {
@@ -89,9 +92,13 @@ const PlayList = ({ username = "" }: any) => {
   }
   return (
     <FlatList
+      showsVerticalScrollIndicator={false}
       ListEmptyComponent={<NotFound message="no videos available" />}
-      style={{ paddingVertical: 10 }}
-      contentContainerStyle={{ paddingBottom: 20,flexGrow:1 }}
+      contentContainerStyle={{
+        paddingBottom: 30,
+        flexGrow: 1,
+        backgroundColor: Colors[colorScheme ?? "dark"].background,
+      }}
       data={data}
       renderItem={({ item }: any) => <SinglePlaylist item={item} />}
       onEndReached={loadMore}
@@ -101,7 +108,7 @@ const PlayList = ({ username = "" }: any) => {
           <ActivityIndicator
             size={40}
             color={Colors.dark.purple}
-            style={{ marginBottom: 30 }}
+            style={{ marginBottom: 20, marginTop: 20 }}
           />
         ) : null
       }
@@ -115,16 +122,23 @@ export default PlayList;
 
 const SinglePlaylist = ({ item }: any) => {
   const router = useRouter();
+  const colorScheme = useColorScheme();
 
   return (
-    <TouchableHighlight
+    <TouchableRipple
+      rippleColor={
+        colorScheme == "dark" ? "rgba(0,0,0,0.5)" : "rgba(0,0,0,0.1)"
+      }
+      style={{
+        padding: 10,
+        paddingHorizontal: 15,
+      }}
       onPress={() => {
         router.push(`/playlist/${item._id}`);
       }}
     >
       <View
         style={{
-          padding: 10,
           flexDirection: "row",
         }}
       >
@@ -164,17 +178,17 @@ const SinglePlaylist = ({ item }: any) => {
               {item?.name}
             </Text>
             <View style={{ flexDirection: "row", gap: 10 }}>
-              {item.isPrivate ? (
-                <MaterialCommunityIcons size={20} color="white" name="lock" />
-              ) : (
-                <MaterialCommunityIcons size={20} color="white" name="earth" />
-              )}
+              <MaterialCommunityIcons
+                size={17}
+                color={colorScheme == "dark" ? "#eee" : "#555"}
+                name={item.isPrivate ? "lock" : "earth"}
+              />
               <Text style={styles.videoCount}>{item.videos} videos</Text>
             </View>
           </View>
         </View>
       </View>
-    </TouchableHighlight>
+    </TouchableRipple>
   );
 };
 

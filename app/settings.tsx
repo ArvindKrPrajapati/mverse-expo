@@ -19,11 +19,11 @@ const Settings = () => {
 
   const { logout } = useAuth();
   const logMeOut = async () => {
-    await mverseGet("/api/auth/logout");
     logout();
-    showSuccessSnackbar("Logged out successfully", 2000);
+    showSuccessSnackbar("Logged out successfully", 2000, 70);
     // @ts-ignore
     navigate("(tabs)");
+    // await mverseGet("/api/auth/logout");
   };
   return (
     <ProtectedContainer byId={true}>
@@ -209,5 +209,3 @@ const ChangeImage = ({ type }: any) => {
     </>
   );
 };
-
-

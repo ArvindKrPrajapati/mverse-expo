@@ -14,7 +14,7 @@ import { mverseGet } from "../service/api.service";
 import { useSnackbar } from "../Providers/SnackbarProvider";
 
 const SearchModal = () => {
-  const glob=useGlobalSearchParams()
+  const glob = useGlobalSearchParams();
   const router = useRouter();
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -43,9 +43,9 @@ const SearchModal = () => {
     }
   };
 
-  const goToSearch=(text:any)=>{
-    router.replace(`/search-page?search=${text}`)
-  }
+  const goToSearch = (text: any) => {
+    router.replace(`/search-page?search=${text}`);
+  };
   return (
     <>
       <View
@@ -53,7 +53,8 @@ const SearchModal = () => {
           paddingTop: Constants.statusBarHeight + 15,
           paddingBottom: 15,
           paddingHorizontal: 15,
-          borderWidth: 1,
+          // borderWidth: 1,
+          borderBottomWidth: 1,
           borderBottomColor: Colors[colorScheme ?? "light"].secondary,
           flexDirection: "row",
           gap: 10,
@@ -80,13 +81,22 @@ const SearchModal = () => {
           style={{
             flex: 1,
             fontSize: 13,
-            paddingHorizontal: 10,
+            paddingHorizontal: 20,
             color: Colors[colorScheme ?? "light"].text,
+            backgroundColor: colorScheme === "dark" ? "#0D141D" : "#eee",
+            borderRadius: 20,
+            padding: 4,
           }}
         />
       </View>
       {/* display */}
-      <ScrollView contentContainerStyle={{ padding: 10 }}>
+      <ScrollView
+        contentContainerStyle={{
+          padding: 10,
+          backgroundColor: Colors[colorScheme ?? "dark"].background,
+          flexGrow: 1,
+        }}
+      >
         {searchText ? (
           <Pressable
             style={{
@@ -95,7 +105,7 @@ const SearchModal = () => {
               alignItems: "center",
               gap: 10,
             }}
-            onPress={()=>goToSearch(searchText)}
+            onPress={() => goToSearch(searchText)}
           >
             {loading ? (
               <ActivityIndicator
@@ -121,13 +131,13 @@ const SearchModal = () => {
               alignItems: "center",
               gap: 10,
             }}
-            onPress={()=>goToSearch(item.title)}
+            onPress={() => goToSearch(item.title)}
           >
             <FontAwesome
-                name="search"
-                size={14}
-                color={Colors[colorScheme ?? "light"].text}
-              />
+              name="search"
+              size={14}
+              color={Colors[colorScheme ?? "light"].text}
+            />
             <Text>{item.title}</Text>
           </Pressable>
         ))}

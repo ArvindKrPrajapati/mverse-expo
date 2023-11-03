@@ -3,7 +3,7 @@ import { Text, View } from "../../components/Themed";
 import { useGlobalSearchParams } from "expo-router";
 import { useSnackbar } from "../../Providers/SnackbarProvider";
 import { mverseGet } from "../../service/api.service";
-import { ActivityIndicator, FlatList, StyleSheet, Image } from "react-native";
+import { ActivityIndicator, FlatList, StyleSheet, Image, useColorScheme } from "react-native";
 import Card from "../../components/Card";
 import Colors from "../../constants/Colors";
 import NotFound from "../../components/NotFound";
@@ -13,6 +13,8 @@ const limit = 20;
 const PlaylistVideoPage = () => {
   const glob = useGlobalSearchParams();
   const id = glob.playlist;
+  const colorScheme=useColorScheme()
+
   const [skip, setSkip] = useState(0);
   const [loadMoreLoading, setLoadMoreLoading] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -89,6 +91,7 @@ const PlaylistVideoPage = () => {
   return (
     <FlatList
       ListEmptyComponent={<NotFound message="no videos available" />}
+      showsVerticalScrollIndicator={false}
       ListHeaderComponent={
         data.length ? (
           <View style={styles.container}>
@@ -111,18 +114,17 @@ const PlaylistVideoPage = () => {
                     flexDirection: "row",
                     backgroundColor: "transaparent",
                     gap: 10,
-                    marginTop: 10,
                   }}
                 >
                   {/* @ts-ignore */}
                   {playlist?.name ? (
                     <>
-                      <Text>
+                      <Text style={{color:"white"}}>
                         by{" "}
                         {playlist?.createdBy.channelName ||
                           playlist?.createdBy.name}
                       </Text>
-                      <Text>{total} Videos</Text>
+                      <Text style={{color:"white"}}>{total} Videos</Text>
                     </>
                   ) : null}
                   {playlist?.name ? (
@@ -163,8 +165,8 @@ const PlaylistVideoPage = () => {
           </View>
         ) : null
       }
-      style={{ paddingVertical: 10 }}
-      contentContainerStyle={{ paddingBottom: 20, flexGrow: 1 }}
+      style={{ paddingBottom: 10 }}
+      contentContainerStyle={{ paddingBottom: 20, flexGrow: 1,backgroundColor:Colors[colorScheme ?? "dark"].background }}
       data={data}
       renderItem={({ item }: any) => <Card item={item} />}
       onEndReached={loadMore}
@@ -174,7 +176,7 @@ const PlaylistVideoPage = () => {
           <ActivityIndicator
             size={40}
             color={Colors.dark.purple}
-            style={{ marginBottom: 30 }}
+            style={{ marginBottom: 30,marginTop:15 }}
           />
         ) : null
       }
@@ -187,8 +189,8 @@ const PlaylistVideoPage = () => {
 const styles = StyleSheet.create({
   container: {
     position: "relative",
-    marginBottom: 10,
-    height: 350,
+    // marginBottom: 10,
+    height: 400,
   },
   backgroundImage: {
     position: "absolute",

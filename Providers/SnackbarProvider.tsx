@@ -8,9 +8,17 @@ import React, {
 import Snackbar from "../components/Snackbar";
 
 type SnackbarContextType = {
-  showSnackbar: (message: string, duration?: number) => void;
-  showSuccessSnackbar: (message: string, duration?: number) => void;
-  showErrorSnackbar: (message: string, duration?: number) => void;
+  showSnackbar: (message: string, duration?: number, bottom?: number) => void;
+  showSuccessSnackbar: (
+    message: string,
+    duration?: number,
+    bottom?: number
+  ) => void;
+  showErrorSnackbar: (
+    message: string,
+    duration?: number,
+    bottom?: number
+  ) => void;
 };
 
 const SnackbarContext = createContext<SnackbarContextType | undefined>(
@@ -26,6 +34,7 @@ export const SnackbarProvider: React.FC<SnackbarProviderProps> = ({
 }) => {
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [bottomOffset, setBottomOffset] = useState(15);
   const [snackbarDuration, setSnackbarDuration] = useState(1500); // Default duration
   const [type, setType] = useState("");
 
@@ -44,30 +53,39 @@ export const SnackbarProvider: React.FC<SnackbarProviderProps> = ({
 
   const showSnackbar = (
     message: string,
-    duration: number = snackbarDuration
+    duration: number = snackbarDuration,
+    bottom: number = 15
   ) => {
-    snackbar(message, duration, "");
+    snackbar(message, duration, "", bottom);
   };
 
   const showSuccessSnackbar = (
     message: string,
-    duration: number = snackbarDuration
+    duration: number = snackbarDuration,
+    bottom: number = 15
   ) => {
-    snackbar(message, duration, "success");
+    snackbar(message, duration, "success", bottom);
   };
 
   const showErrorSnackbar = (
     message: string,
-    duration: number = snackbarDuration
+    duration: number = snackbarDuration,
+    bottom: number = 15
   ) => {
-    snackbar(message, duration, "error");
+    snackbar(message, duration, "error", bottom);
   };
 
-  const snackbar = (message: string, duration: number, type: string) => {
+  const snackbar = (
+    message: string,
+    duration: number,
+    type: string,
+    bottom: number
+  ) => {
     setSnackbarMessage(message);
     setSnackbarDuration(duration);
     setType(type);
     setSnackbarVisible(true);
+    setBottomOffset(bottom);
   };
   return (
     <SnackbarContext.Provider
@@ -78,7 +96,9 @@ export const SnackbarProvider: React.FC<SnackbarProviderProps> = ({
         <Snackbar
           message={snackbarMessage}
           visible={snackbarVisible}
+          setVisible={setSnackbarVisible}
           type={type}
+          bottom={bottomOffset}
         />
       )}
     </SnackbarContext.Provider>

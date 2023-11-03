@@ -1,10 +1,16 @@
-import { View, Text, ActivityIndicator,FlatList } from "react-native";
+import {
+  View,
+  Text,
+  ActivityIndicator,
+  FlatList,
+  useColorScheme,
+} from "react-native";
 import React, { useState, useEffect } from "react";
 import { useGlobalSearchParams } from "expo-router";
 import { mverseGet } from "../../service/api.service";
 import { useSnackbar } from "../../Providers/SnackbarProvider";
 import NotFound from "../NotFound";
-import {  ScrollView } from "react-native-gesture-handler";
+import { ScrollView } from "react-native-gesture-handler";
 import Card from "../Card";
 import Colors from "../../constants/Colors";
 
@@ -16,6 +22,8 @@ const HomeTab = () => {
   const [data, setData] = useState([]);
   const { showErrorSnackbar, showSuccessSnackbar } = useSnackbar();
   const [refreshing, setRefreshing] = useState(false);
+
+  const colorScheme = useColorScheme();
 
   const _init = async (showLoader: boolean = true) => {
     try {
@@ -52,12 +60,15 @@ const HomeTab = () => {
       </View>
     );
   }
- 
+
   return (
     <FlatList
-    ListEmptyComponent={<NotFound message="No video found"/>}
-      style={{ paddingVertical: 10 }}
-      contentContainerStyle={{flexGrow:1}}
+      showsVerticalScrollIndicator={false}
+      ListEmptyComponent={<NotFound message="No video found" />}
+      contentContainerStyle={{
+        flexGrow: 1,
+        backgroundColor: Colors[colorScheme ?? "dark"].background,
+      }}
       data={data}
       renderItem={({ item }: any) => <Card item={item} />}
       refreshing={refreshing}

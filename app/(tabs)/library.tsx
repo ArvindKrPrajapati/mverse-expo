@@ -78,16 +78,20 @@ export default function Library() {
         </TouchableOpacity>
       </View>
       <ScrollView
+        style={{ backgroundColor: Colors[colorScheme ?? "dark"].background }}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       >
         {loading ? (
-          <CardSkeleton history={true}/>
+          <CardSkeleton history={true} />
         ) : (
           <FlatList
+            showsVerticalScrollIndicator={false}
             style={{ paddingHorizontal: 5 }}
-            contentContainerStyle={{ backgroundColor: "red" }}
+            contentContainerStyle={{
+              backgroundColor: Colors[colorScheme ?? "dark"].background,
+            }}
             data={data}
             renderItem={({ item }: any) => <Card item={item} history={true} />}
             horizontal={true}

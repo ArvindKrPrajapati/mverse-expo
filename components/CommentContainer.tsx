@@ -162,6 +162,7 @@ const CommentContainer = ({
           />
         </View>
         <FlatList
+          showsVerticalScrollIndicator={false}
           ref={flatListRef}
           contentContainerStyle={{ paddingHorizontal: 10, flexGrow: 1 }}
           ListEmptyComponent={
@@ -198,33 +199,33 @@ const CommentContainer = ({
           refreshing={refreshing}
           onRefresh={onRefresh}
         />
-       
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              padding: 10,
-              paddingBottom: 15,
-            }}
-          >
-            <Input
-              type="textarea"
-              multiline={true}
-              inputStyle={{ marginBottom: 0, borderWidth: 0 }}
-              parentStyle={{ width: "90%", marginBottom: 0 }}
-              placeholder="Write comment..."
-              value={commentText}
-              onChange={(e) => setCommentText(e)}
-            />
-            <LogoButton
-              onPress={submitComment}
-              icon={addingComment ? "" : "send"}
-              loading={addingComment}
-              style={{ padding: 5, backgroundColor: "transparent" }}
-              iconSize={25}
-            />
-          </View>
+
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            padding: 10,
+            paddingBottom: 15,
+          }}
+        >
+          <Input
+            type="textarea"
+            multiline={true}
+            inputStyle={{ marginBottom: 0, borderWidth: 0 }}
+            parentStyle={{ width: "90%", marginBottom: 0 }}
+            placeholder="Write comment..."
+            value={commentText}
+            onChange={(e) => setCommentText(e)}
+          />
+          <LogoButton
+            onPress={submitComment}
+            icon={addingComment ? "" : "send"}
+            loading={addingComment}
+            style={{ padding: 5, backgroundColor: "transparent" }}
+            iconSize={25}
+          />
+        </View>
       </View>
     </Modal>
   );

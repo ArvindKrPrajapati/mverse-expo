@@ -7,9 +7,9 @@ const ErrorPage = () => {
 
     
   return (
-    <View style={{flex:1,justifyContent:"center",alignSelf:"center"}}>
+    <View style={{flex:1,justifyContent:"center"}}>
         {/* @ts-ignore */}
-      <Text style={{fontSize:20,fontWeight:'bold'}}>{route?.params?.message || "something went wrong"}</Text>
+      <Text style={{fontSize:20,fontWeight:'bold',alignSelf:"center"}}>{route?.params?.message || "something went wrong"}</Text>
     </View>
   )
 }

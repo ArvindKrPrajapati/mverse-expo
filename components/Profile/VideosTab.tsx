@@ -1,4 +1,10 @@
-import { View, Text, ActivityIndicator, FlatList } from "react-native";
+import {
+  View,
+  Text,
+  ActivityIndicator,
+  FlatList,
+  useColorScheme,
+} from "react-native";
 import React, { useState, useEffect } from "react";
 import { useGlobalSearchParams } from "expo-router";
 import { mverseGet } from "../../service/api.service";
@@ -19,6 +25,8 @@ const VideosTab = () => {
   const [end, setEnd] = useState(false);
   const { showErrorSnackbar, showSuccessSnackbar } = useSnackbar();
   const [refreshing, setRefreshing] = useState(false);
+
+  const colorScheme = useColorScheme();
 
   const _init = async (showLoader: boolean = false) => {
     try {
@@ -80,15 +88,17 @@ const VideosTab = () => {
       </View>
     );
   }
- 
+
   return (
     <FlatList
-      style={{ paddingVertical: 10, paddingBottom: 20 }}
+      showsVerticalScrollIndicator={false}
+      style={{ paddingBottom: 20 }}
       data={data}
-      ListEmptyComponent={
-        <NotFound message="No video found"/>
-      }
-      contentContainerStyle={{flexGrow:1}}
+      ListEmptyComponent={<NotFound message="No video found" />}
+      contentContainerStyle={{
+        flexGrow: 1,
+        backgroundColor: Colors[colorScheme ?? "dark"].background,
+      }}
       renderItem={({ item }: any) => <Card item={item} />}
       onEndReached={loadMore}
       onEndReachedThreshold={0.1}

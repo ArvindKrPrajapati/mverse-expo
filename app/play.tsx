@@ -47,11 +47,11 @@ const PlayPage = () => {
   const getVideo = async () => {
     try {
       const res = await mverseGet("/api/video/" + i._id);
-      if (res.success) {        
+      if (res.success) {
         setItem(res.data);
       } else {
         showErrorSnackbar(res.error);
-      } 
+      }
     } catch (error: any) {
       showErrorSnackbar(error.message);
     } finally {
@@ -162,6 +162,7 @@ const PlayPage = () => {
         </View>
       </Modal>
       <FlatList
+        showsVerticalScrollIndicator={false}
         style={{ paddingBottom: 20 }}
         contentContainerStyle={{ flexGrow: 1 }}
         stickyHeaderIndices={[1]}
