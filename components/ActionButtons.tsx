@@ -14,6 +14,8 @@ const ActionButtons = ({
   dislikes = 0,
   reaction,
   videoLoading,
+  setIsCommentModalVisible,
+  comments = 0,
 }: any) => {
   const [localLikes, setLocalLikes] = useState(likes);
   const [localDislikes, setLocalDislikes] = useState(dislikes);
@@ -106,33 +108,34 @@ const ActionButtons = ({
     return null;
   }
   return (
-    <ScrollView
-      horizontal={true}
-      showsHorizontalScrollIndicator={false}
-      style={{ gap: 15 }}
-    >
+    <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
       <LogoButton
+        iconSize={17}
         onPress={() => handleReaction("like")}
         icon={localReaction == "like" ? "thumb-up" : "thumb-up-outline"}
         label={localLikes ? handleNumbers(localLikes) : ""}
         style={{ backgroundColor: "transparent" }}
       />
       <LogoButton
+        iconSize={17}
         onPress={() => handleReaction("dislike")}
         icon={localReaction == "dislike" ? "thumb-down" : "thumb-down-outline"}
         label={localDislikes ? handleNumbers(localDislikes) : ""}
-        style={{ backgroundColor: "transparent" }}
+        style={{ backgroundColor: "transparent", marginHorizontal: 5 }}
       />
-      {/* <LogoButton
-        icon="comment-outline"
-        label={handleNumbers(10000)}
-        style={{ backgroundColor: "transparent" }}
-      /> */}
       <LogoButton
+        iconSize={17}
+        onPress={() => setIsCommentModalVisible(true)}
+        icon="comment-outline"
+        label={comments ? handleNumbers(comments) : ""}
+        style={{ backgroundColor: "transparent", marginHorizontal: 5 }}
+      />
+      <LogoButton
+        iconSize={17}
         onPress={shareToApp}
         icon="share-outline"
         label="share"
-        style={{ backgroundColor: "transparent" }}
+        style={{ backgroundColor: "transparent", marginHorizontal: 5 }}
       />
     </ScrollView>
   );

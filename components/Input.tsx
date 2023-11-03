@@ -1,16 +1,17 @@
 import React, { useState } from "react";
-import { View, TextInput, useColorScheme } from "react-native";
+import { View, TextInput, useColorScheme, StyleProp,TextStyle, ViewStyle } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Text } from "./Themed";
 
 type Props = {
   type: string;
   onChange?: (text: string) => void;
-  parentStyle?: any; // Use StyleSheet.create for custom styles
+  parentStyle?: StyleProp<ViewStyle>;
   labelStyle?: any;
-  inputStyle?: any;
-  label: string;
+  inputStyle?:  StyleProp<TextStyle>;
+  label?: string;
   value?: string;
+  placeholder?: string;
   multiline?: boolean;
   editable?: boolean;
   maxLength?: number;
@@ -27,6 +28,7 @@ export default function Input({
   multiline,
   editable = true,
   maxLength,
+  placeholder=""
 }: Props) {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const colorScheme = useColorScheme();
@@ -34,14 +36,16 @@ export default function Input({
 
   return (
     <View style={[{ marginBottom: 16, width: "100%" }, parentStyle]}>
-      <Text
-        style={[
-          { fontSize: 16, fontWeight: "bold", marginBottom: 8 },
-          labelStyle,
-        ]}
-      >
-        {label}
-      </Text>
+      {label ? (
+        <Text
+          style={[
+            { fontSize: 16, fontWeight: "bold", marginBottom: 8 },
+            labelStyle,
+          ]}
+        >
+          {label}
+        </Text>
+      ) : null}
       <View style={{ position: "relative" }}>
         {type === "textarea" ? (
           <TextInput
@@ -50,6 +54,8 @@ export default function Input({
             onChangeText={onChange}
             multiline={multiline}
             maxLength={maxLength}
+            placeholder={placeholder}
+            placeholderTextColor="#eee"
             style={[
               {
                 color: isDark ? "white" : "black",

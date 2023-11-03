@@ -18,9 +18,11 @@ import { mverseGet, mversePatch } from "../service/api.service";
 import CardSkeleton from "../components/SkeletonLoader/CardSkeleton";
 import { useAuth } from "../Providers/AuthProvider";
 import { Link, useRouter } from "expo-router";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import Modal from "react-native-modal";
 import ActionButtons from "../components/ActionButtons";
+import Input from "../components/Input";
+import CommentContainer from "../components/CommentContainer";
 
 const orientationEnum = [
   "UNKNOWN",
@@ -45,12 +47,11 @@ const PlayPage = () => {
   const getVideo = async () => {
     try {
       const res = await mverseGet("/api/video/" + i._id);
-      if (res.success) {
-        
+      if (res.success) {        
         setItem(res.data);
       } else {
         showErrorSnackbar(res.error);
-      }
+      } 
     } catch (error: any) {
       showErrorSnackbar(error.message);
     } finally {
@@ -67,6 +68,7 @@ const PlayPage = () => {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<any>([]);
   const [end, setEnd] = useState(false);
+  const [isCommentModalVisible, setIsCommentModalVisible] = useState(false);
   const { showErrorSnackbar, showSuccessSnackbar } = useSnackbar();
 
   const _init = async (showLoader: boolean = false) => {
@@ -114,10 +116,17 @@ const PlayPage = () => {
       <Card item={obj} horizontal={false} replace={true} />
     );
   };
-  
+
   return (
     <>
       <MversePlayer url={i.link} poster={i.thumbnail} title={item.title} />
+      {/* comment modal */}
+      <CommentContainer
+        isCommentModalVisible={isCommentModalVisible}
+        videoId={i._id}
+        setIsCommentModalVisible={setIsCommentModalVisible}
+      />
+      {/* end */}
       <Modal
         deviceWidth={deviceWidth}
         deviceHeight={deviceHeight}
@@ -146,7 +155,7 @@ const PlayPage = () => {
             }}
           >
             <Text style={{ fontWeight: "700" }}>Description</Text>
-            <LogoButton icon="close" onPress={()=>setIsVisible(false)} />
+            <LogoButton icon="close" onPress={() => setIsVisible(false)} />
           </View>
 
           <Text style={{ padding: 15 }}>{item.description}</Text>
@@ -188,7 +197,15 @@ const PlayPage = () => {
                 fontSize: 13,
               }}
             />
-            <ActionButtons videoId={item._id} likes={item.likes} dislikes={item.dislikes} reaction={item.raection} videoLoading={videoLoading}/>
+            <ActionButtons
+              videoId={item._id}
+              likes={item.likes}
+              dislikes={item.dislikes}
+              reaction={item.raection}
+              comments={item.comments}
+              videoLoading={videoLoading}
+              setIsCommentModalVisible={setIsCommentModalVisible}
+            />
           </View>
         }
         data={loading ? [1] : [1, ...data]}
