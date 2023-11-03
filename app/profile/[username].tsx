@@ -9,6 +9,7 @@ import AboutTab from "../../components/Profile/AboutTab";
 const Tab = createMaterialTopTabNavigator();
 const ProfileScreen = () => {
   const colorScheme = useColorScheme();
+
   return (
     <Tab.Navigator
       screenOptions={{

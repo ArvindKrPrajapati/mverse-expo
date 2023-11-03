@@ -127,7 +127,6 @@ const ChangeImage = ({ type }: any) => {
               alignItems: "center",
               borderRadius: 0,
               paddingTop: Constants.statusBarHeight + 10,
-              paddingH: 10,
               width: "100%",
               paddingHorizontal: 20,
             }}

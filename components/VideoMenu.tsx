@@ -13,11 +13,16 @@ import { Text, View } from "./Themed";
 import { baseUrl, mversePost } from "../service/api.service";
 import { useSnackbar } from "../Providers/SnackbarProvider";
 import { useAuth } from "../Providers/AuthProvider";
+import AddToPlaylist from "./AddToPlaylist";
+import LogoButton from "./LogoButton";
+import CreateNewPlaylist from "./CreateNewPlaylist";
 
 const VideoMenu = ({ _id }: any) => {
   const colorScheme = useColorScheme();
   const { showErrorSnackbar, showSuccessSnackbar } = useSnackbar();
   const { user } = useAuth();
+  const [addToPlaylistModal, setAddToPlaylistModal] = useState(false);
+  const [newPlaylistModal, setNewPlaylistModal] = useState(false);
 
   const [isVisible, setIsVisible] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -44,6 +49,11 @@ const VideoMenu = ({ _id }: any) => {
     }
   };
 
+  const toggleAddToPlaylistModal = () => {
+    setIsVisible(false);
+    setAddToPlaylistModal(true);
+  };
+
   const shareToApp = async () => {
     try {
       const url = baseUrl + "/play/" + _id;
@@ -65,6 +75,23 @@ const VideoMenu = ({ _id }: any) => {
   };
   return (
     <>
+      {addToPlaylistModal ? (
+        <AddToPlaylist
+          isVisible={addToPlaylistModal}
+          setIsVisible={setAddToPlaylistModal}
+          videoId={_id}
+          setNewPlaylistModal={setNewPlaylistModal}
+        />
+      ) : null}
+
+      {newPlaylistModal ? (
+        <CreateNewPlaylist
+          isVisible={newPlaylistModal}
+          setIsVisible={setNewPlaylistModal}
+          videoId={_id}
+        />
+      ) : null}
+
       <Modal
         animationType="slide"
         transparent={true}
@@ -83,7 +110,7 @@ const VideoMenu = ({ _id }: any) => {
             onPress={() => setIsVisible(false)}
             style={{ flexGrow: 1 }}
           ></Pressable>
-          <View style={{ padding: 20 }}>
+          <View style={{ padding: 2, paddingBottom: 0 }}>
             <View
               style={{
                 backgroundColor: Colors[colorScheme ?? "light"].secondary,
@@ -92,45 +119,54 @@ const VideoMenu = ({ _id }: any) => {
               }}
             >
               {user ? (
-                <Pressable
-                  onPress={addToWatchLater}
-                  style={{
-                    padding: 5,
-                    flexDirection: "row",
-                    gap: 8,
-                    alignItems: "center",
-                  }}
-                >
-                  {({ pressed }) => (
-                    <>
-                      {loading ? (
-                        <ActivityIndicator
-                          size={25}
-                          color={Colors.dark.purple}
-                          style={{ marginRight: 15 }}
-                        />
-                      ) : (
-                        <MaterialCommunityIcons
-                          name="timer-outline"
-                          size={25}
-                          color={Colors[colorScheme ?? "light"].text}
+                <>
+                  <Pressable
+                    onPress={addToWatchLater}
+                    style={{
+                      padding: 5,
+                      flexDirection: "row",
+                      gap: 8,
+                      alignItems: "center",
+                    }}
+                  >
+                    {({ pressed }) => (
+                      <>
+                        {loading ? (
+                          <ActivityIndicator
+                            size={25}
+                            color={Colors.dark.purple}
+                            style={{ marginRight: 15 }}
+                          />
+                        ) : (
+                          <MaterialCommunityIcons
+                            name="timer-outline"
+                            size={25}
+                            color={Colors[colorScheme ?? "light"].text}
+                            style={{
+                              marginRight: 15,
+                              opacity: pressed ? 0.5 : 1,
+                            }}
+                          />
+                        )}
+                        <Text
                           style={{
-                            marginRight: 15,
+                            color: Colors[colorScheme ?? "light"].text,
                             opacity: pressed ? 0.5 : 1,
                           }}
-                        />
-                      )}
-                      <Text
-                        style={{
-                          color: Colors[colorScheme ?? "light"].text,
-                          opacity: pressed ? 0.5 : 1,
-                        }}
-                      >
-                        Add to watchlist
-                      </Text>
-                    </>
-                  )}
-                </Pressable>
+                        >
+                          Add to watchlist
+                        </Text>
+                      </>
+                    )}
+                  </Pressable>
+                  {/* add to playlist */}
+                  <LogoButton
+                    onPress={toggleAddToPlaylistModal}
+                    icon="plus-box-multiple-outline"
+                    style={{ gap: 20 }}
+                    label="Add to Playlist"
+                  />
+                </>
               ) : null}
               <Pressable
                 onPress={shareToApp}
@@ -168,43 +204,6 @@ const VideoMenu = ({ _id }: any) => {
                   </>
                 )}
               </Pressable>
-              {/* add to playlist */}
-              {/* <Pressable
-                onPress={addToWatchLater}
-                style={{
-                  padding: 5,
-                  flexDirection: "row",
-                  gap: 8,
-                  alignItems: "center",
-                }}
-              >
-                {({ pressed }) => (
-                  <>
-                    {loading ? (
-                      <ActivityIndicator
-                        size={25}
-                        color={Colors.dark.purple}
-                        style={{ marginRight: 15 }}
-                      />
-                    ) : (
-                      <MaterialCommunityIcons
-                        name="plus-box-multiple-outline"
-                        size={25}
-                        color={Colors[colorScheme ?? "light"].text}
-                        style={{ marginRight: 15, opacity: pressed ? 0.5 : 1,marginVertical:5 }}
-                      />
-                    )}
-                    <Text
-                      style={{
-                        color: Colors[colorScheme ?? "light"].text,
-                        opacity: pressed ? 0.5 : 1,
-                      }}
-                    >
-                      Add to playlist
-                    </Text>
-                  </>
-                )}
-              </Pressable> */}
             </View>
           </View>
         </View>

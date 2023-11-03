@@ -2,7 +2,12 @@ import React, { useEffect, useState } from "react";
 import { Text, View } from "../components/Themed";
 import { useRoute } from "@react-navigation/native";
 import MversePlayer from "../components/Player/MversePlayer";
-import { ActivityIndicator, FlatList, useColorScheme } from "react-native";
+import {
+  ActivityIndicator,
+  FlatList,
+  useColorScheme,
+  Dimensions,
+} from "react-native";
 import Card from "../components/Card";
 import Colors from "../constants/Colors";
 import LogoButton from "../components/LogoButton";
@@ -13,7 +18,11 @@ import { mverseGet, mversePatch } from "../service/api.service";
 import CardSkeleton from "../components/SkeletonLoader/CardSkeleton";
 import { useAuth } from "../Providers/AuthProvider";
 import { Link, useRouter } from "expo-router";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
+import Modal from "react-native-modal";
+import ActionButtons from "../components/ActionButtons";
+import Input from "../components/Input";
+import CommentContainer from "../components/CommentContainer";
 
 const orientationEnum = [
   "UNKNOWN",
@@ -25,20 +34,24 @@ const orientationEnum = [
 const limit = 10;
 
 const PlayPage = () => {
+  const deviceHeight = Dimensions.get("window").height;
+  const deviceWidth = Dimensions.get("window").width;
+
   const route = useRoute();
   // @ts-ignore
   const i = route.params.item || null;
   const [item, setItem] = useState(i);
   const [videoLoading, setVideoLoading] = useState(true);
+  const [isVisible, setIsVisible] = useState(false);
 
   const getVideo = async () => {
     try {
       const res = await mverseGet("/api/video/" + i._id);
-      if (res.success) {
+      if (res.success) {        
         setItem(res.data);
       } else {
         showErrorSnackbar(res.error);
-      }
+      } 
     } catch (error: any) {
       showErrorSnackbar(error.message);
     } finally {
@@ -55,6 +68,7 @@ const PlayPage = () => {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<any>([]);
   const [end, setEnd] = useState(false);
+  const [isCommentModalVisible, setIsCommentModalVisible] = useState(false);
   const { showErrorSnackbar, showSuccessSnackbar } = useSnackbar();
 
   const _init = async (showLoader: boolean = false) => {
@@ -102,9 +116,51 @@ const PlayPage = () => {
       <Card item={obj} horizontal={false} replace={true} />
     );
   };
+
   return (
     <>
       <MversePlayer url={i.link} poster={i.thumbnail} title={item.title} />
+      {/* comment modal */}
+      <CommentContainer
+        isCommentModalVisible={isCommentModalVisible}
+        videoId={i._id}
+        setIsCommentModalVisible={setIsCommentModalVisible}
+      />
+      {/* end */}
+      <Modal
+        deviceWidth={deviceWidth}
+        deviceHeight={deviceHeight}
+        isVisible={isVisible}
+        animationIn="slideInUp"
+        hasBackdrop={false}
+        onBackButtonPress={() => setIsVisible(false)}
+        coverScreen={false}
+        useNativeDriver={true}
+        style={{ margin: 0, justifyContent: "flex-end" }}
+      >
+        <View
+          style={{
+            width: "100%",
+            aspectRatio: 11 / 17,
+            backgroundColor: Colors[colorScheme ?? "light"].secondary,
+          }}
+        >
+          <View
+            style={{
+              flexDirection: "row",
+              backgroundColor: Colors[colorScheme ?? "light"].secondary,
+              justifyContent: "space-between",
+              alignItems: "center",
+              paddingHorizontal: 10,
+            }}
+          >
+            <Text style={{ fontWeight: "700" }}>Description</Text>
+            <LogoButton icon="close" onPress={() => setIsVisible(false)} />
+          </View>
+
+          <Text style={{ padding: 15 }}>{item.description}</Text>
+        </View>
+      </Modal>
       <FlatList
         style={{ paddingBottom: 20 }}
         contentContainerStyle={{ flexGrow: 1 }}
@@ -124,6 +180,9 @@ const PlayPage = () => {
               {handleNumbers(item.views)} views {formatDate(item.createdAt)}
             </Text>
             <LogoButton
+              onPress={() => {
+                setIsVisible(true);
+              }}
               icon="chevron-down"
               numberOfLines={2}
               label={item.description}
@@ -137,6 +196,15 @@ const PlayPage = () => {
                 flex: 1,
                 fontSize: 13,
               }}
+            />
+            <ActionButtons
+              videoId={item._id}
+              likes={item.likes}
+              dislikes={item.dislikes}
+              reaction={item.raection}
+              comments={item.comments}
+              videoLoading={videoLoading}
+              setIsCommentModalVisible={setIsCommentModalVisible}
             />
           </View>
         }
