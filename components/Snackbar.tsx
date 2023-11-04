@@ -58,6 +58,7 @@ const Snackbar = ({ message, visible, type, setVisible, bottom = 15 }: any) => {
           backgroundColor: backgroundColor,
           justifyContent: "space-between",
         }}
+        textColor="white"
         onPress={() => setVisible(false)}
         rightIcon="close"
         iconSize={15}
