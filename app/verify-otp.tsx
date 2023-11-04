@@ -12,7 +12,7 @@ import {
 import { useSnackbar } from "../Providers/SnackbarProvider";
 import { mversePost } from "../service/api.service";
 import { useAuth } from "../Providers/AuthProvider";
-import { Link, router } from "expo-router";
+import { Link, router, useNavigation } from "expo-router";
 
 const darkLogo = require("../assets/images/darkLogo.png");
 const logo = require("../assets/images/logo.png");
@@ -25,6 +25,7 @@ const VerifyOtp = () => {
   const { updateUser, logout } = useAuth();
   const colorScheme = useColorScheme();
   const { showErrorSnackbar, showSuccessSnackbar } = useSnackbar();
+  const navigation = useNavigation();
 
   const _init = async () => {
     const _email = await AsyncStorage.getItem("rawEmail");
@@ -52,12 +53,12 @@ const VerifyOtp = () => {
       });
 
       if (res.success) {
-        showSuccessSnackbar("Account created successfully");
+        showSuccessSnackbar("Account created successfully", 2000);
         logout();
         await AsyncStorage.setItem("token", res.token);
         updateUser(res.data);
         // @ts-ignore
-        navigator("(tabs)");
+        navigation.navigate("(tabs)");
       } else {
         showErrorSnackbar(res.error);
       }
@@ -73,15 +74,16 @@ const VerifyOtp = () => {
     router.replace("/signup");
   };
   return (
-    <View style={{ flex: 1, padding: 24, paddingTop: 60 }}>
+    <View style={{ flex: 1, padding: 24, paddingTop: 40 }}>
       <Image
         source={colorScheme == "dark" ? darkLogo : logo}
         style={{
           height: 70,
           resizeMode: "contain",
-          width: colorScheme == "dark" ? 140 : 160,
-          marginLeft: colorScheme == "dark" ? -10 : -20,
+          width: 160,
+          marginLeft: -40,
           alignSelf: "flex-start",
+          marginBottom: 20,
         }}
       />
       <Text
