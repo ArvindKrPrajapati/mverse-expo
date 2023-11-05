@@ -33,6 +33,7 @@ type Props = {
   poster?: string;
   freezeControls?: boolean;
   minimizeVideo?: () => void;
+  changeScreenOrientation?: (state: any) => void;
 };
 
 const statusBarHeight = 0;
@@ -45,6 +46,7 @@ const MversePlayer = ({
   title = url,
   freezeControls = false,
   minimizeVideo = () => {},
+  changeScreenOrientation = (state: any) => {},
 }: Props) => {
   const [skip, setSkip] = useState({ forward: 0, backward: 0 });
   // ######### gesture ##########
@@ -97,11 +99,13 @@ const MversePlayer = ({
         ScreenOrientation.OrientationLock.LANDSCAPE
       );
       setIsPortrait(false);
+      changeScreenOrientation(false);
     } else {
       await ScreenOrientation.lockAsync(
         ScreenOrientation.OrientationLock.PORTRAIT_UP
       );
       setIsPortrait(true);
+      changeScreenOrientation(true);
     }
   }, [isPortrait]);
 
@@ -110,6 +114,7 @@ const MversePlayer = ({
       ScreenOrientation.OrientationLock.PORTRAIT_UP
     );
     setIsPortrait(true);
+    changeScreenOrientation(true);
   };
 
   const onLoadstart = () => {};
@@ -301,8 +306,8 @@ const MversePlayer = ({
           onSliderValueChange={onSliderValueChange}
           style={{
             position: "absolute",
-            bottom: -10,
-            zIndex: 9,
+            bottom: -8,
+            zIndex: 900,
             left: -16,
             width: Dimensions.get("window").width + 31,
           }}

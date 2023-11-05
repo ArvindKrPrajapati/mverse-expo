@@ -1,21 +1,13 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  StyleSheet,
-  PanResponder,
-  PanResponderGestureState,
-  PanResponderInstance,
-  Dimensions,
-  useColorScheme,
-} from "react-native";
+import { View, Dimensions, useColorScheme } from "react-native";
 import Modal from "react-native-modal";
 import LogoButton from "./LogoButton";
 import { useSwiperModal } from "../Providers/SwiperModalProvider";
-import PlayPage from "../app/play";
 import MyPlayerPlayPage from "./MyPlayerPlayPage";
 import Colors from "../constants/Colors";
 import MversePlayer from "./Player/MversePlayer";
 import { Text } from "./Themed";
+import { usePathname } from "expo-router";
 
 interface CustomModalProps {
   isVisible: boolean;
@@ -23,15 +15,18 @@ interface CustomModalProps {
   item: any;
 }
 const screenHeight = Dimensions.get("window").height;
-// const screenHeight = 80;
 
 const SwiperModal: React.FC<CustomModalProps> = ({
   isVisible,
   closeModal,
   item,
 }) => {
-  const [modalHeight, setModalHeight] = useState(screenHeight);
+  const [modalHeight, setModalHeight] = useState(
+    Dimensions.get("window").height
+  );
+  const [isPortrait, setIsPortrait] = useState(true);
   const colorScheme = useColorScheme();
+  const route = usePathname();
 
   const { hideSwiperModal } = useSwiperModal();
   const MIN_HEIGHT = 70;
@@ -70,7 +65,15 @@ const SwiperModal: React.FC<CustomModalProps> = ({
   const minimize = () => {
     setModalHeight(MIN_HEIGHT);
   };
-
+  // useEffect(() => {
+  //   Dimensions.addEventListener("change", (event) => {
+  //     setModalHeight(event.window.height);
+  //   });
+  // }, []);
+  const changeScreenOrientation = (_isPortrait: boolean) => {
+    setIsPortrait(_isPortrait);
+    // setModalHeight(Dimensions.get("window").height);
+  };
   return (
     <Modal
       isVisible={isVisible}
@@ -98,10 +101,10 @@ const SwiperModal: React.FC<CustomModalProps> = ({
     >
       <View
         style={{
-          height: modalHeight,
+          height: isPortrait ? modalHeight : "100%",
           backgroundColor: Colors[colorScheme ?? "dark"].background,
           // backgroundColor: "red",
-          marginBottom: modalHeight == MIN_HEIGHT ? 62 : 0,
+          marginBottom: modalHeight == MIN_HEIGHT && route == "/" ? 62 : 0,
           flexDirection: modalHeight == MIN_HEIGHT ? "row" : "column",
         }}
       >
@@ -122,6 +125,7 @@ const SwiperModal: React.FC<CustomModalProps> = ({
             title={item.title}
             freezeControls={modalHeight == MIN_HEIGHT}
             minimizeVideo={minimize}
+            changeScreenOrientation={changeScreenOrientation}
           />
         </View>
         {modalHeight == MIN_HEIGHT ? (
@@ -153,7 +157,9 @@ const SwiperModal: React.FC<CustomModalProps> = ({
         ) : null}
         <MyPlayerPlayPage
           item={item}
-          isVisible={modalHeight == MIN_HEIGHT ? false : true}
+          isVisible={
+            modalHeight == MIN_HEIGHT ? false : isPortrait ? true : false
+          }
         />
       </View>
     </Modal>
