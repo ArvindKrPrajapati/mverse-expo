@@ -15,6 +15,7 @@ import Menu from "../components/Menu";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Colors from "../constants/Colors";
 import { StatusBar } from "expo-status-bar";
+import { SwiperModalProvider } from "../Providers/SwiperModalProvider";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -63,155 +64,160 @@ function RootLayoutNav() {
         <ThemeProvider
           value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
         >
-          <StatusBar
-            backgroundColor={Colors[colorScheme ?? "dark"].background}
-          />
-          <Stack
-            screenOptions={{
-              animation: "slide_from_right",
-              headerStyle: {
-                backgroundColor: Colors[colorScheme ?? "dark"].background,
-              },
-            }}
-          >
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen
-              name="login"
-              options={{
-                presentation: "modal",
-                headerShown: false,
+          <SwiperModalProvider>
+            <StatusBar
+              backgroundColor={Colors[colorScheme ?? "dark"].background}
+            />
+            <Stack
+              screenOptions={{
                 animation: "slide_from_right",
+                headerStyle: {
+                  backgroundColor: Colors[colorScheme ?? "dark"].background,
+                },
               }}
-            />
-            <Stack.Screen
-              name="signup"
-              options={{
-                presentation: "modal",
-                headerShown: false,
-                animation: "slide_from_right",
-              }}
-            />
-            <Stack.Screen
-              name="verify-otp"
-              options={{
-                presentation: "modal",
-                headerShown: false,
-              }}
-            />
-            <Stack.Screen
-              name="create-channel"
-              options={{
-                presentation: "modal",
-                headerTitle: "Create Channel",
-                animation: "slide_from_right",
-                headerRight: () => <Menu style={{ marginRight: 0 }} />,
-              }}
-            />
-            <Stack.Screen
-              name="search-modal"
-              options={{
-                presentation: "modal",
-                headerShown: false,
-                headerTitle: "search",
-                animation: "slide_from_bottom",
-              }}
-            />
-            <Stack.Screen
-              name="play"
-              options={{
-                headerShown: false,
-                animation: "slide_from_bottom",
-              }}
-            />
-            <Stack.Screen
-              name="error"
-              options={{
-                headerTitle: "Error",
-                animation: "slide_from_bottom",
-              }}
-            />
-            <Stack.Screen
-              name="settings"
-              options={{
-                headerTitle: "Settings",
-                animation: "slide_from_right",
-              }}
-            />
-            <Stack.Screen
-              name="profile/[username]"
-              //@ts-ignore
-              options={({ route }: any) => ({
-                title: route?.params?.username || "Profile",
-                headerShown: true,
-                animation: "slide_from_right",
-                headerShadowVisible: false,
-                headerRight: () => <Menu style={{ marginRight: 0 }} />,
-              })}
-            />
-            <Stack.Screen
-              name="search-page"
-              //@ts-ignore
-              options={({ route, navigation }: any) => ({
-                title: "",
-                headerShown: true,
-                animation: "slide_from_right",
-                headerLeft: () => (
-                  <View
-                    style={{
-                      flex: 1,
-                      flexDirection: "row",
-                      gap: 15,
-                      alignItems: "center",
-                    }}
-                  >
-                    <Pressable onPress={() => router.back()}>
-                      <MaterialCommunityIcons
-                        name="arrow-left"
-                        size={20}
-                        color={Colors[colorScheme ?? "light"].text}
-                      />
-                    </Pressable>
-                    <Pressable
-                      onPress={() =>
-                        router.push(
-                          `/search-modal?search=${route.params.search}`
-                        )
-                      }
+            >
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen
+                name="login"
+                options={{
+                  presentation: "modal",
+                  headerShown: false,
+                  animation: "slide_from_right",
+                }}
+              />
+              <Stack.Screen
+                name="signup"
+                options={{
+                  presentation: "modal",
+                  headerShown: false,
+                  animation: "slide_from_right",
+                }}
+              />
+              <Stack.Screen
+                name="verify-otp"
+                options={{
+                  presentation: "modal",
+                  headerShown: false,
+                }}
+              />
+              <Stack.Screen
+                name="create-channel"
+                options={{
+                  presentation: "modal",
+                  headerTitle: "Create Channel",
+                  animation: "slide_from_right",
+                  headerRight: () => <Menu style={{ marginRight: 0 }} />,
+                }}
+              />
+              <Stack.Screen
+                name="search-modal"
+                options={{
+                  presentation: "modal",
+                  headerShown: false,
+                  headerTitle: "search",
+                  animation: "slide_from_bottom",
+                }}
+              />
+              <Stack.Screen
+                name="play"
+                options={{
+                  headerShown: false,
+                  animation: "slide_from_bottom",
+                }}
+              />
+              <Stack.Screen
+                name="error"
+                options={{
+                  headerTitle: "Error",
+                  animation: "slide_from_bottom",
+                }}
+              />
+              <Stack.Screen
+                name="settings"
+                options={{
+                  headerTitle: "Settings",
+                  animation: "slide_from_right",
+                }}
+              />
+              <Stack.Screen
+                name="profile/[username]"
+                //@ts-ignore
+                options={({ route }: any) => ({
+                  title: route?.params?.username || "Profile",
+                  headerShown: true,
+                  animation: "slide_from_right",
+                  headerShadowVisible: false,
+                  headerRight: () => <Menu style={{ marginRight: 0 }} />,
+                })}
+              />
+              <Stack.Screen
+                name="search-page"
+                //@ts-ignore
+                options={({ route, navigation }: any) => ({
+                  title: "",
+                  headerShown: true,
+                  animation: "slide_from_right",
+                  headerLeft: () => (
+                    <View
                       style={{
-                        backgroundColor:
-                          colorScheme == "light" ? "#eee" : "#0D141D",
-                        padding: 8,
-                        paddingHorizontal: 15,
-                        borderRadius: 50,
-                        width: "70%",
+                        flex: 1,
+                        flexDirection: "row",
+                        gap: 15,
+                        alignItems: "center",
                       }}
                     >
-                      <Text numberOfLines={1}>{route.params.search || ""}</Text>
-                    </Pressable>
-                  </View>
-                ),
-                headerRight: () => <Menu style={{ marginRight: 0 }} />,
-              })}
-            />
-            <Stack.Screen
-              name="playlist/[playlist]"
-              //@ts-ignore
-              options={({ route }: any) => ({
-                title: route?.params?.playlist.replace("-", " ") || "Playlist",
-                headerShown: true,
-                headerRight: () => <Menu style={{ marginRight: 0 }} />,
-              })}
-            />
-            <Stack.Screen
-              name="private-playlist"
-              //@ts-ignore
-              options={({ route }: any) => ({
-                title: "Private Playlist",
-                headerShown: true,
-                headerRight: () => <Menu style={{ marginRight: 0 }} />,
-              })}
-            />
-          </Stack>
+                      <Pressable onPress={() => router.back()}>
+                        <MaterialCommunityIcons
+                          name="arrow-left"
+                          size={20}
+                          color={Colors[colorScheme ?? "light"].text}
+                        />
+                      </Pressable>
+                      <Pressable
+                        onPress={() =>
+                          router.push(
+                            `/search-modal?search=${route.params.search}`
+                          )
+                        }
+                        style={{
+                          backgroundColor:
+                            colorScheme == "light" ? "#eee" : "#0D141D",
+                          padding: 8,
+                          paddingHorizontal: 15,
+                          borderRadius: 50,
+                          width: "70%",
+                        }}
+                      >
+                        <Text numberOfLines={1}>
+                          {route.params.search || ""}
+                        </Text>
+                      </Pressable>
+                    </View>
+                  ),
+                  headerRight: () => <Menu style={{ marginRight: 0 }} />,
+                })}
+              />
+              <Stack.Screen
+                name="playlist/[playlist]"
+                //@ts-ignore
+                options={({ route }: any) => ({
+                  title:
+                    route?.params?.playlist.replace("-", " ") || "Playlist",
+                  headerShown: true,
+                  headerRight: () => <Menu style={{ marginRight: 0 }} />,
+                })}
+              />
+              <Stack.Screen
+                name="private-playlist"
+                //@ts-ignore
+                options={({ route }: any) => ({
+                  title: "Private Playlist",
+                  headerShown: true,
+                  headerRight: () => <Menu style={{ marginRight: 0 }} />,
+                })}
+              />
+            </Stack>
+          </SwiperModalProvider>
         </ThemeProvider>
       </SnackbarProvider>
     </AuthProvider>

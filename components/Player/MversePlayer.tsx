@@ -14,11 +14,11 @@ import * as ScreenOrientation from "expo-screen-orientation";
 import Button from "../Button";
 import Constants from "expo-constants";
 import MversePlayerControls from "./MversePlayerControls";
-import { useRouter } from "expo-router";
 import { useSnackbar } from "../../Providers/SnackbarProvider";
 import {
   Gesture,
   GestureDetector,
+  GestureHandlerRootView,
   HandlerStateChangeEvent,
   PinchGestureHandler,
   PinchGestureHandlerEventPayload,
@@ -31,17 +31,27 @@ type Props = {
   url: string;
   title?: string;
   poster?: string;
+  freezeControls?: boolean;
+  minimizeVideo?: () => void;
 };
 
-const statusBarHeight = Constants.statusBarHeight;
+const statusBarHeight = 0;
+// const statusBarHeight = Constants.statusBarHeight;
 const autoPlay = true;
 
-const MversePlayer = ({ url, poster, title = url }: Props) => {
+const MversePlayer = ({
+  url,
+  poster,
+  title = url,
+  freezeControls = false,
+  minimizeVideo = () => {},
+}: Props) => {
   const [skip, setSkip] = useState({ forward: 0, backward: 0 });
   // ######### gesture ##########
   const doubleTap = Gesture.Tap()
     .numberOfTaps(2)
     .onStart(async (event) => {
+      if (freezeControls) return;
       //get the tap position on X
       if (!videoRef) return;
       const touchX = event.absoluteX;
@@ -60,6 +70,7 @@ const MversePlayer = ({ url, poster, title = url }: Props) => {
     });
 
   const singleTap = Gesture.Tap().onStart((event) => {
+    if (freezeControls) return;
     handleShowControl();
   });
 
@@ -73,8 +84,11 @@ const MversePlayer = ({ url, poster, title = url }: Props) => {
   const [duration, setDuration] = useState(0);
   const [watched, setWatched] = useState(0);
   const [videoMode, setVideoMode] = useState<any>("CONTAIN");
-  const router = useRouter();
   const { showErrorSnackbar } = useSnackbar();
+  useEffect(() => {
+    setShowControls(false);
+  }, [freezeControls]);
+
   const changeOrientation = useCallback(async () => {
     if (isPortrait) {
       await ScreenOrientation.lockAsync(
@@ -131,7 +145,7 @@ const MversePlayer = ({ url, poster, title = url }: Props) => {
     await ScreenOrientation.lockAsync(
       ScreenOrientation.OrientationLock.PORTRAIT_UP
     );
-    router.back();
+    minimizeVideo();
   };
 
   const handleShowControl = () => {
@@ -186,10 +200,10 @@ const MversePlayer = ({ url, poster, title = url }: Props) => {
     }
   };
   return (
-    <SafeAreaView
+    <GestureHandlerRootView
       style={[
         { width: "100%", zIndex: 20 },
-        isPortrait ? { aspectRatio: 16 / 10 } : { height: "100%" },
+        isPortrait ? { aspectRatio: 16 / 9 } : { height: "100%" },
       ]}
     >
       <StatusBar hidden={!isPortrait} />
@@ -198,7 +212,7 @@ const MversePlayer = ({ url, poster, title = url }: Props) => {
           onGestureEvent={onPinchEvent}
           onHandlerStateChange={onPinchStateChange}
         >
-          <View
+          <Pressable
             style={{
               width: "100%",
               height: "100%",
@@ -268,7 +282,7 @@ const MversePlayer = ({ url, poster, title = url }: Props) => {
                 ) : null}
               </View>
             </View>
-          </View>
+          </Pressable>
         </PinchGestureHandler>
       </GestureDetector>
       {isPortrait && !showControls ? (
@@ -328,7 +342,7 @@ const MversePlayer = ({ url, poster, title = url }: Props) => {
         onError={onError}
         isMuted={isMute}
       />
-    </SafeAreaView>
+    </GestureHandlerRootView>
   );
 };
 

@@ -9,6 +9,7 @@ import Colors from "../constants/Colors";
 import VideoMenu from "./VideoMenu";
 import { TouchableHighlight } from "react-native-gesture-handler";
 import { TouchableRipple } from "react-native-paper";
+import { useSwiperModal } from "../Providers/SwiperModalProvider";
 
 export default function Card({
   item,
@@ -18,6 +19,7 @@ export default function Card({
 }: any) {
   const colorScheme = useColorScheme();
   const navigation = useNavigation();
+  const { showSwiperModal, hideSwiperModal } = useSwiperModal();
 
   const styleForHistory = history
     ? {
@@ -32,13 +34,14 @@ export default function Card({
         colorScheme == "dark" ? "rgba(0,0,0,0.5)" : "rgba(0,0,0,0.1)"
       }
       onPress={() => {
-        if (replace) {
-          // @ts-ignore
-          navigation.replace("play", { item });
-        } else {
-          // @ts-ignore
-          navigation.push("play", { item });
-        }
+        // if (replace) {
+        //   // @ts-ignore
+        //   navigation.replace("play", { item });
+        // } else {
+        //   // @ts-ignore
+        //   navigation.push("play", { item });
+        // }
+        showSwiperModal(item);
       }}
     >
       <View

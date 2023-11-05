@@ -130,12 +130,12 @@ const CommentContainer = ({
       onBackButtonPress={() => setIsCommentModalVisible(false)}
       coverScreen={false}
       useNativeDriver={true}
-      style={{ margin: 0, justifyContent: "space-between", marginTop: 5 }}
+      style={{ margin: 0, justifyContent: "space-between", marginTop: 0 }}
     >
       <View
         style={{
           width: "100%",
-          aspectRatio: 18 / 11,
+          aspectRatio: 16 / 9,
         }}
       ></View>
 

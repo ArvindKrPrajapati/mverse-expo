@@ -120,7 +120,7 @@ const MversePlayerControls = ({
       <Pressable onPress={() => null}>
         <Animated.View
           style={{
-            height: 110,
+            height: 100,
             width: "80%",
             marginBottom: 10,
             backgroundColor: "rgba(0,0,0,0.5)",
@@ -160,7 +160,7 @@ const MversePlayerControls = ({
               <LogoButton
                 onPress={playPause ? playPause : null}
                 icon={isPlaying ? "pause" : "play"}
-                iconSize={60}
+                iconSize={50}
                 style={{ backgroundColor: "transparent", padding: 3 }}
                 textColor="white"
               />
