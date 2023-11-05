@@ -84,7 +84,10 @@ const MversePlayerControls = ({
   return (
     <Pressable
       style={[
-        { justifyContent: "space-between", backgroundColor: "rgba(0,0,0,0.3)" },
+        {
+          justifyContent: "space-between",
+          backgroundColor: "rgba(0,0,0,0.3)",
+        },
         containerStyle,
       ]}
       onPress={hideControls}
@@ -105,6 +108,7 @@ const MversePlayerControls = ({
           icon="chevron-down"
           iconSize={25}
           style={{ backgroundColor: "transparent", padding: 0 }}
+          textColor="white"
         />
         <Text
           style={{ color: "#eee", flex: 1, fontWeight: "600" }}
@@ -116,7 +120,7 @@ const MversePlayerControls = ({
       <Pressable onPress={() => null}>
         <Animated.View
           style={{
-            height: 90,
+            height: 110,
             width: "80%",
             marginBottom: 10,
             backgroundColor: "rgba(0,0,0,0.5)",
@@ -143,6 +147,7 @@ const MversePlayerControls = ({
               onPress={() => (setIsMute ? setIsMute(!isMute) : null)}
               icon={isMute ? "volume-off" : "volume-high"}
               style={{ backgroundColor: "transparent" }}
+              textColor="white"
             />
             {/*  middle controls */}
             <View style={{ flexDirection: "row" }}>
@@ -150,17 +155,20 @@ const MversePlayerControls = ({
                 icon="skip-previous"
                 iconSize={25}
                 style={{ backgroundColor: "transparent" }}
+                textColor="white"
               />
               <LogoButton
                 onPress={playPause ? playPause : null}
                 icon={isPlaying ? "pause" : "play"}
-                iconSize={45}
+                iconSize={60}
                 style={{ backgroundColor: "transparent", padding: 3 }}
+                textColor="white"
               />
               <LogoButton
                 icon="skip-next"
                 iconSize={25}
                 style={{ backgroundColor: "transparent" }}
+                textColor="white"
               />
             </View>
             {/* last */}
@@ -168,6 +176,7 @@ const MversePlayerControls = ({
               onPress={changeOrientation ? changeOrientation : null}
               icon={isPortrait ? "fullscreen" : "fullscreen-exit"}
               style={{ backgroundColor: "transparent" }}
+              textColor="white"
             />
           </View>
           {/* timers */}
