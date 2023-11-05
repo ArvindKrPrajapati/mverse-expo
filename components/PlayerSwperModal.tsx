@@ -25,6 +25,9 @@ const SwiperModal: React.FC<CustomModalProps> = ({
     Dimensions.get("window").height
   );
   const [isPortrait, setIsPortrait] = useState(true);
+  const [changeToLandscape, setChangeToLandscape] = useState(false);
+  const [changeToPortrait, setChangeToPortrait] = useState(false);
+
   const colorScheme = useColorScheme();
   const route = usePathname();
 
@@ -36,43 +39,57 @@ const SwiperModal: React.FC<CustomModalProps> = ({
   }, [item]);
 
   const handleSwipeMove = (offset: number, obj: any) => {
-    // if (obj.dy > 0) {
-    //   // already modal in min height
-    //   if (modalHeight == MIN_HEIGHT) return;
-    //   const h = screenHeight * offset;
-    //   setModalHeight(h);
-    //   if (h <= screenHeight * 0.4) {
-    //     setModalHeight(screenHeight);
-    //   }
-    // } else {
-    //   // already modal in full height
-    //   if (modalHeight == screenHeight) return;
-    //   const uph = Math.abs(obj.dy);
-    //   if (uph > MIN_HEIGHT) {
-    //     setModalHeight(uph);
-    //   }
-    // }
-  };
+    if (obj.dy > 0) {
+      // already modal in min height
+      if (modalHeight == MIN_HEIGHT) return;
+      const h = screenHeight * offset;
+      setModalHeight(h);
+    } else {
+      // already modal in full height
+      if (modalHeight >= screenHeight) return;
 
+      const uph = Math.abs(obj.dy);
+      if (uph > MIN_HEIGHT) {
+        setModalHeight(uph);
+      }
+    }
+  };
+  const swipeCancel = (evt: any) => {
+    if (!isPortrait) return;
+    if (evt.dy > 0) {
+      if ((modalHeight / screenHeight) * 100 > 40) {
+        setModalHeight(screenHeight);
+      }
+    } else {
+      if ((modalHeight / screenHeight) * 100 < 40) {
+        setModalHeight(MIN_HEIGHT);
+      }
+    }
+  };
   const onSwipeComplete = (direction: any) => {
     if (direction.swipingDirection == "up") {
+      if (modalHeight == screenHeight) {
+        setChangeToLandscape(true);
+      }
       setModalHeight(screenHeight);
     } else {
-      setModalHeight(MIN_HEIGHT);
+      if (isPortrait) {
+        setModalHeight(MIN_HEIGHT);
+      } else {
+        setChangeToPortrait(true);
+        setModalHeight(screenHeight);
+      }
     }
   };
 
   const minimize = () => {
     setModalHeight(MIN_HEIGHT);
   };
-  // useEffect(() => {
-  //   Dimensions.addEventListener("change", (event) => {
-  //     setModalHeight(event.window.height);
-  //   });
-  // }, []);
+
   const changeScreenOrientation = (_isPortrait: boolean) => {
     setIsPortrait(_isPortrait);
-    // setModalHeight(Dimensions.get("window").height);
+    setChangeToLandscape(false);
+    setChangeToPortrait(false);
   };
   return (
     <Modal
@@ -97,6 +114,7 @@ const SwiperModal: React.FC<CustomModalProps> = ({
       onSwipeComplete={(x) => {
         onSwipeComplete(x);
       }}
+      onSwipeCancel={swipeCancel}
       swipeDirection={["down", "up"]}
     >
       <View
@@ -126,6 +144,8 @@ const SwiperModal: React.FC<CustomModalProps> = ({
             freezeControls={modalHeight == MIN_HEIGHT}
             minimizeVideo={minimize}
             changeScreenOrientation={changeScreenOrientation}
+            landscape={changeToLandscape}
+            portrait={changeToPortrait}
           />
         </View>
         {modalHeight == MIN_HEIGHT ? (

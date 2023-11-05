@@ -34,6 +34,8 @@ type Props = {
   freezeControls?: boolean;
   minimizeVideo?: () => void;
   changeScreenOrientation?: (state: any) => void;
+  landscape?: boolean;
+  portrait?: boolean;
 };
 
 const statusBarHeight = 0;
@@ -47,6 +49,8 @@ const MversePlayer = ({
   freezeControls = false,
   minimizeVideo = () => {},
   changeScreenOrientation = (state: any) => {},
+  landscape = false,
+  portrait = false,
 }: Props) => {
   const [skip, setSkip] = useState({ forward: 0, backward: 0 });
   // ######### gesture ##########
@@ -93,19 +97,23 @@ const MversePlayer = ({
     changeOrientationPortrait();
   }, [freezeControls]);
 
+  useEffect(() => {
+    if (landscape) {
+      changeOrientationLandscape();
+    }
+  }, [landscape]);
+
+  useEffect(() => {
+    if (portrait) {
+      changeOrientationPortrait();
+    }
+  }, [portrait]);
+
   const changeOrientation = useCallback(async () => {
     if (isPortrait) {
-      await ScreenOrientation.lockAsync(
-        ScreenOrientation.OrientationLock.LANDSCAPE
-      );
-      setIsPortrait(false);
-      changeScreenOrientation(false);
+      await changeOrientationLandscape();
     } else {
-      await ScreenOrientation.lockAsync(
-        ScreenOrientation.OrientationLock.PORTRAIT_UP
-      );
-      setIsPortrait(true);
-      changeScreenOrientation(true);
+      await changeOrientationPortrait();
     }
   }, [isPortrait]);
 
@@ -115,6 +123,14 @@ const MversePlayer = ({
     );
     setIsPortrait(true);
     changeScreenOrientation(true);
+  };
+
+  const changeOrientationLandscape = async () => {
+    await ScreenOrientation.lockAsync(
+      ScreenOrientation.OrientationLock.LANDSCAPE
+    );
+    setIsPortrait(false);
+    changeScreenOrientation(false);
   };
 
   const onLoadstart = () => {};
