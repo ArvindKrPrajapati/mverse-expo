@@ -94,7 +94,7 @@ const MversePlayer = ({
   const changeOrientation = useCallback(async () => {
     if (isPortrait) {
       await ScreenOrientation.lockAsync(
-        ScreenOrientation.OrientationLock.LANDSCAPE_LEFT
+        ScreenOrientation.OrientationLock.LANDSCAPE
       );
       setIsPortrait(false);
     } else {
