@@ -85,8 +85,10 @@ const MversePlayer = ({
   const [watched, setWatched] = useState(0);
   const [videoMode, setVideoMode] = useState<any>("CONTAIN");
   const { showErrorSnackbar } = useSnackbar();
+
   useEffect(() => {
     setShowControls(false);
+    changeOrientationPortrait();
   }, [freezeControls]);
 
   const changeOrientation = useCallback(async () => {
@@ -102,6 +104,13 @@ const MversePlayer = ({
       setIsPortrait(true);
     }
   }, [isPortrait]);
+
+  const changeOrientationPortrait = async () => {
+    await ScreenOrientation.lockAsync(
+      ScreenOrientation.OrientationLock.PORTRAIT_UP
+    );
+    setIsPortrait(true);
+  };
 
   const onLoadstart = () => {};
 
