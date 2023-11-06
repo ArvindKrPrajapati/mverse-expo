@@ -76,6 +76,7 @@ const SearchModal = () => {
           placeholder="search"
           value={searchText}
           onChangeText={handleChange}
+          underlineColorAndroid={"transparent"}
           placeholderTextColor={Colors[colorScheme ?? "light"].secondaryText}
           autoFocus={true}
           style={{

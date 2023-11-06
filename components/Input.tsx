@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { View, TextInput, useColorScheme, StyleProp,TextStyle, ViewStyle } from "react-native";
+import {
+  View,
+  TextInput,
+  useColorScheme,
+  StyleProp,
+  TextStyle,
+  ViewStyle,
+} from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Text } from "./Themed";
 
@@ -8,7 +15,7 @@ type Props = {
   onChange?: (text: string) => void;
   parentStyle?: StyleProp<ViewStyle>;
   labelStyle?: any;
-  inputStyle?:  StyleProp<TextStyle>;
+  inputStyle?: StyleProp<TextStyle>;
   label?: string;
   value?: string;
   placeholder?: string;
@@ -28,7 +35,7 @@ export default function Input({
   multiline,
   editable = true,
   maxLength,
-  placeholder=""
+  placeholder = "",
 }: Props) {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const colorScheme = useColorScheme();
@@ -49,6 +56,7 @@ export default function Input({
       <View style={{ position: "relative" }}>
         {type === "textarea" ? (
           <TextInput
+            underlineColorAndroid={"transparent"}
             editable={editable}
             value={value}
             onChangeText={onChange}
@@ -72,6 +80,7 @@ export default function Input({
           />
         ) : (
           <TextInput
+            underlineColorAndroid={"transparent"}
             editable={editable}
             value={value}
             onChangeText={onChange}
