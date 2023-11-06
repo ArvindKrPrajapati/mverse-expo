@@ -9,7 +9,7 @@ import MversePlayer from "./Player/MversePlayer";
 import { Text } from "./Themed";
 import { usePathname, useRouter } from "expo-router";
 import CardSkeleton from "./SkeletonLoader/CardSkeleton";
-import { avoidRoute } from "../utils/common";
+import { autoPlay, avoidRoute } from "../utils/common";
 
 interface CustomModalProps {
   isVisible: boolean;
@@ -18,7 +18,7 @@ interface CustomModalProps {
 }
 
 const screenHeight = Dimensions.get("window").height;
-const screenWidth = Dimensions.get("window").width;
+// const screenHeight = 65;
 
 const SwiperModal: React.FC<CustomModalProps> = ({
   isVisible,
@@ -33,6 +33,7 @@ const SwiperModal: React.FC<CustomModalProps> = ({
   const [changeToPortrait, setChangeToPortrait] = useState(false);
   const [itemChanged, setItemChanged] = useState(false);
   const [scaleUp, setScaleUp] = useState(1);
+  const [isPlaying, setIsPlaying] = useState(autoPlay);
 
   const colorScheme = useColorScheme();
   const route = usePathname();
@@ -114,6 +115,10 @@ const SwiperModal: React.FC<CustomModalProps> = ({
     setChangeToPortrait(false);
   };
 
+  const onVideoStateChange = (_isPlaying: boolean) => {
+    setIsPlaying(_isPlaying);
+  };
+
   return (
     <Modal
       isVisible={isVisible}
@@ -177,6 +182,8 @@ const SwiperModal: React.FC<CustomModalProps> = ({
               changeScreenOrientation={changeScreenOrientation}
               landscape={changeToLandscape}
               portrait={changeToPortrait}
+              onVideoStateChange={onVideoStateChange}
+              isPlayingVideo={isPlaying}
             />
           )}
         </View>
@@ -195,6 +202,18 @@ const SwiperModal: React.FC<CustomModalProps> = ({
                 {item.by.channelName}
               </Text>
             </View>
+            <LogoButton
+              icon={isPlaying ? "pause" : "play"}
+              iconSize={25}
+              onPress={() => {
+                setIsPlaying(!isPlaying);
+              }}
+              style={{
+                backgroundColor: "transparent",
+                height: "100%",
+                marginTop: 0,
+              }}
+            />
             <LogoButton
               icon="close"
               iconSize={25}

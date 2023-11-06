@@ -57,3 +57,4 @@ export const formatTime = (seconds: number) => {
 };
 
 export const avoidRoute = ["/", "/library"];
+export const autoPlay = true;

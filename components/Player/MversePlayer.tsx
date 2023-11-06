@@ -26,6 +26,7 @@ import {
 } from "react-native-gesture-handler";
 import MverseSlider from "./MverseSlider";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { autoPlay } from "../../utils/common";
 
 type Props = {
   url: string;
@@ -36,11 +37,12 @@ type Props = {
   changeScreenOrientation?: (state: any) => void;
   landscape?: boolean;
   portrait?: boolean;
+  onVideoStateChange?: (state: boolean) => void;
+  isPlayingVideo?: boolean;
 };
 
 const statusBarHeight = 0;
 // const statusBarHeight = Constants.statusBarHeight;
-const autoPlay = true;
 
 const MversePlayer = ({
   url,
@@ -49,8 +51,10 @@ const MversePlayer = ({
   freezeControls = false,
   minimizeVideo = () => {},
   changeScreenOrientation = (state: any) => {},
+  onVideoStateChange = (state: boolean) => {},
   landscape = false,
   portrait = false,
+  isPlayingVideo = autoPlay,
 }: Props) => {
   const [skip, setSkip] = useState({ forward: 0, backward: 0 });
   // ######### gesture ##########
@@ -109,6 +113,14 @@ const MversePlayer = ({
     }
   }, [portrait]);
 
+  useEffect(() => {
+    if (isPlayingVideo) {
+      playVideo();
+    } else {
+      pauseVideo();
+    }
+  }, [isPlayingVideo]);
+
   const changeOrientation = useCallback(async () => {
     if (isPortrait) {
       await changeOrientationLandscape();
@@ -162,13 +174,28 @@ const MversePlayer = ({
   const onReadyForDisplay = (e: any) => {};
 
   const playPause = async () => {
+    if (isPlaying) {
+      await pauseVideo();
+      onVideoStateChange(false);
+    } else {
+      await playVideo();
+      onVideoStateChange(true);
+    }
+  };
+
+  const playVideo = async () => {
+    if (!videoRef.current) return;
+    if (!isPlaying) {
+      await videoRef.current.playAsync();
+      setIsPlaying(true);
+    }
+  };
+  const pauseVideo = async () => {
     if (!videoRef.current) return;
     if (isPlaying) {
       await videoRef.current.pauseAsync();
-    } else {
-      await videoRef.current.playAsync();
+      setIsPlaying(false);
     }
-    setIsPlaying(!isPlaying);
   };
 
   const minimize = async () => {
