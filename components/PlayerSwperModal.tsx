@@ -8,6 +8,7 @@ import Colors from "../constants/Colors";
 import MversePlayer from "./Player/MversePlayer";
 import { Text } from "./Themed";
 import { usePathname } from "expo-router";
+import CardSkeleton from "./SkeletonLoader/CardSkeleton";
 
 interface CustomModalProps {
   isVisible: boolean;
@@ -27,6 +28,7 @@ const SwiperModal: React.FC<CustomModalProps> = ({
   const [isPortrait, setIsPortrait] = useState(true);
   const [changeToLandscape, setChangeToLandscape] = useState(false);
   const [changeToPortrait, setChangeToPortrait] = useState(false);
+  const [itemChanged, setItemChanged] = useState(false);
 
   const colorScheme = useColorScheme();
   const route = usePathname();
@@ -35,7 +37,13 @@ const SwiperModal: React.FC<CustomModalProps> = ({
   const MIN_HEIGHT = 70;
 
   useEffect(() => {
-    setModalHeight(screenHeight);
+    setItemChanged(true);
+    const tm = setTimeout(() => {
+      setModalHeight(screenHeight);
+      setItemChanged(false);
+    }, 50);
+
+    return () => clearTimeout(tm);
   }, [item]);
 
   const handleSwipeMove = (offset: number, obj: any) => {
@@ -91,6 +99,11 @@ const SwiperModal: React.FC<CustomModalProps> = ({
     setChangeToLandscape(false);
     setChangeToPortrait(false);
   };
+
+  // if (itemChanged) {
+  //   return null;
+  // }
+
   return (
     <Modal
       isVisible={isVisible}
@@ -137,16 +150,20 @@ const SwiperModal: React.FC<CustomModalProps> = ({
               : {}
           }
         >
-          <MversePlayer
-            url={item.link}
-            poster={item.thumbnail}
-            title={item.title}
-            freezeControls={modalHeight == MIN_HEIGHT}
-            minimizeVideo={minimize}
-            changeScreenOrientation={changeScreenOrientation}
-            landscape={changeToLandscape}
-            portrait={changeToPortrait}
-          />
+          {itemChanged ? (
+            <View style={{ backgroundColor: "black" }}></View>
+          ) : (
+            <MversePlayer
+              url={item.link}
+              poster={item.thumbnail}
+              title={item.title}
+              freezeControls={modalHeight == MIN_HEIGHT}
+              minimizeVideo={minimize}
+              changeScreenOrientation={changeScreenOrientation}
+              landscape={changeToLandscape}
+              portrait={changeToPortrait}
+            />
+          )}
         </View>
         {modalHeight == MIN_HEIGHT ? (
           <View
@@ -175,12 +192,16 @@ const SwiperModal: React.FC<CustomModalProps> = ({
             />
           </View>
         ) : null}
-        <MyPlayerPlayPage
-          item={item}
-          isVisible={
-            modalHeight == MIN_HEIGHT ? false : isPortrait ? true : false
-          }
-        />
+        {itemChanged ? (
+          <CardSkeleton horizontal={false} size={3} />
+        ) : (
+          <MyPlayerPlayPage
+            item={item}
+            isVisible={
+              modalHeight == MIN_HEIGHT ? false : isPortrait ? true : false
+            }
+          />
+        )}
       </View>
     </Modal>
   );
