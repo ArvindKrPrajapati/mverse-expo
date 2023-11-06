@@ -33,6 +33,7 @@ export default function TabLayout() {
           height: 63,
           paddingTop: 7,
           backgroundColor: Colors[colorScheme ?? "dark"].background,
+          borderTopColor: Colors[colorScheme ?? "dark"].secondary,
         },
         headerTitleContainerStyle: { display: "none" },
         headerRightContainerStyle: {
