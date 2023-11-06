@@ -16,6 +16,7 @@ import { useAuth } from "../Providers/AuthProvider";
 import AddToPlaylist from "./AddToPlaylist";
 import LogoButton from "./LogoButton";
 import CreateNewPlaylist from "./CreateNewPlaylist";
+import { TouchableRipple } from "react-native-paper";
 
 const VideoMenu = ({ _id }: any) => {
   const colorScheme = useColorScheme();
@@ -200,8 +201,7 @@ const VideoMenu = ({ _id }: any) => {
           </View>
         </View>
       </Modal>
-      <TouchableHighlight
-        underlayColor="transparent"
+      <TouchableRipple
         style={{ width: 30 }}
         onPress={() => {
           setIsVisible(true);
@@ -213,7 +213,7 @@ const VideoMenu = ({ _id }: any) => {
           color={Colors[colorScheme ?? "light"].text}
           style={{ marginRight: 15 }}
         />
-      </TouchableHighlight>
+      </TouchableRipple>
     </>
   );
 };

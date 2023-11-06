@@ -55,3 +55,5 @@ export const formatTime = (seconds: number) => {
     return `${formattedHours}:${formattedRemainingMinutes}:${formattedSeconds}`;
   }
 };
+
+export const avoidRoute = ["/", "/library"];

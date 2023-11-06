@@ -7,15 +7,18 @@ import MyPlayerPlayPage from "./MyPlayerPlayPage";
 import Colors from "../constants/Colors";
 import MversePlayer from "./Player/MversePlayer";
 import { Text } from "./Themed";
-import { usePathname } from "expo-router";
+import { usePathname, useRouter } from "expo-router";
 import CardSkeleton from "./SkeletonLoader/CardSkeleton";
+import { avoidRoute } from "../utils/common";
 
 interface CustomModalProps {
   isVisible: boolean;
   closeModal: () => void;
   item: any;
 }
+
 const screenHeight = Dimensions.get("window").height;
+const screenWidth = Dimensions.get("window").width;
 
 const SwiperModal: React.FC<CustomModalProps> = ({
   isVisible,
@@ -29,12 +32,14 @@ const SwiperModal: React.FC<CustomModalProps> = ({
   const [changeToLandscape, setChangeToLandscape] = useState(false);
   const [changeToPortrait, setChangeToPortrait] = useState(false);
   const [itemChanged, setItemChanged] = useState(false);
+  const [scaleUp, setScaleUp] = useState(1);
 
   const colorScheme = useColorScheme();
   const route = usePathname();
+  const router = useRouter();
 
   const { hideSwiperModal } = useSwiperModal();
-  const MIN_HEIGHT = 70;
+  const MIN_HEIGHT = 65;
 
   useEffect(() => {
     setItemChanged(true);
@@ -48,12 +53,19 @@ const SwiperModal: React.FC<CustomModalProps> = ({
 
   const handleSwipeMove = (offset: number, obj: any) => {
     if (obj.dy > 0) {
+      if (!isPortrait) {
+        setScaleUp(0.9);
+      }
+
       // already modal in min height
       if (modalHeight == MIN_HEIGHT) return;
       const h = screenHeight * offset;
       setModalHeight(h);
     } else {
       // already modal in full height
+      if (modalHeight == screenHeight) {
+        setScaleUp(1.2);
+      }
       if (modalHeight >= screenHeight) return;
 
       const uph = Math.abs(obj.dy);
@@ -63,6 +75,7 @@ const SwiperModal: React.FC<CustomModalProps> = ({
     }
   };
   const swipeCancel = (evt: any) => {
+    setScaleUp(1);
     if (!isPortrait) return;
     if (evt.dy > 0) {
       if ((modalHeight / screenHeight) * 100 > 40) {
@@ -95,14 +108,11 @@ const SwiperModal: React.FC<CustomModalProps> = ({
   };
 
   const changeScreenOrientation = (_isPortrait: boolean) => {
+    setScaleUp(1);
     setIsPortrait(_isPortrait);
     setChangeToLandscape(false);
     setChangeToPortrait(false);
   };
-
-  // if (itemChanged) {
-  //   return null;
-  // }
 
   return (
     <Modal
@@ -115,7 +125,11 @@ const SwiperModal: React.FC<CustomModalProps> = ({
       }}
       onBackButtonPress={() => {
         if (modalHeight == MIN_HEIGHT) {
-          hideSwiperModal();
+          if (route == "/") {
+            hideSwiperModal();
+          } else {
+            router.back();
+          }
         } else {
           setModalHeight(MIN_HEIGHT);
         }
@@ -135,20 +149,21 @@ const SwiperModal: React.FC<CustomModalProps> = ({
           height: isPortrait ? modalHeight : "100%",
           backgroundColor: Colors[colorScheme ?? "dark"].background,
           // backgroundColor: "red",
-          marginBottom: modalHeight == MIN_HEIGHT && route == "/" ? 62 : 0,
+          marginBottom:
+            modalHeight == MIN_HEIGHT && avoidRoute.includes(route) ? 62 : 0,
           flexDirection: modalHeight == MIN_HEIGHT ? "row" : "column",
         }}
       >
         <View
-          style={
+          style={[
             modalHeight == MIN_HEIGHT
               ? {
                   height: MIN_HEIGHT,
                   aspectRatio: 16 / 9,
                   flexDirection: "row",
                 }
-              : {}
-          }
+              : { transform: [{ scale: scaleUp }] },
+          ]}
         >
           {itemChanged ? (
             <View style={{ backgroundColor: "black" }}></View>

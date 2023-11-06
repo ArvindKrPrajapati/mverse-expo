@@ -30,6 +30,7 @@ export default function Card({
   const horizontalStyle = horizontal ? { height: 90 } : { width: "100%" };
   return (
     <TouchableRipple
+      style={{ backgroundColor: Colors[colorScheme ?? "dark"].background }}
       rippleColor={
         colorScheme == "dark" ? "rgba(0,0,0,0.5)" : "rgba(0,0,0,0.1)"
       }

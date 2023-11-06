@@ -55,7 +55,14 @@ const HomeTab = () => {
 
   if (loading) {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: Colors[colorScheme ?? "dark"].background,
+        }}
+      >
         <ActivityIndicator size={50} color={Colors.dark.purple} />
       </View>
     );
