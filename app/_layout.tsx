@@ -7,7 +7,13 @@ import {
 import { useFonts } from "expo-font";
 import { SplashScreen, Stack, useRouter } from "expo-router";
 import { useEffect } from "react";
-import { Pressable, TextInput, View, useColorScheme } from "react-native";
+import {
+  LogBox,
+  Pressable,
+  TextInput,
+  View,
+  useColorScheme,
+} from "react-native";
 import { AuthProvider } from "../Providers/AuthProvider";
 import { SnackbarProvider } from "../Providers/SnackbarProvider";
 import { Text } from "../components/Themed";
@@ -31,6 +37,7 @@ export const unstable_settings = {
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+  LogBox.ignoreAllLogs();
   const [loaded, error] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
     ...FontAwesome.font,
@@ -140,6 +147,14 @@ function RootLayoutNav() {
                 }}
               />
               <Stack.Screen
+                name="social-post"
+                options={{
+                  headerTitle: "Post",
+                  animation: "slide_from_right",
+                  headerShadowVisible: false,
+                }}
+              />
+              <Stack.Screen
                 name="profile/[username]"
                 //@ts-ignore
                 options={({ route }: any) => ({
@@ -215,6 +230,14 @@ function RootLayoutNav() {
                   headerShown: true,
                   headerRight: () => <Menu style={{ marginRight: 0 }} />,
                 })}
+              />
+              <Stack.Screen
+                name="social"
+                options={{ headerShown: false, animation: "slide_from_left" }}
+              />
+              <Stack.Screen
+                name="add-social"
+                options={{ headerShown: false, animation: "none" }}
               />
             </Stack>
           </SwiperModalProvider>

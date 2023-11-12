@@ -13,9 +13,14 @@ import { mverseGet, uploadImage } from "../service/api.service";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import LogoButton from "../components/LogoButton";
 
+import { Text as ReactNativePaperText } from "react-native-paper";
+
 const Settings = () => {
   const { showSuccessSnackbar } = useSnackbar();
   const { navigate } = useNavigation();
+  const { user } = useAuth();
+
+  const colorScheme = useColorScheme();
 
   const { logout } = useAuth();
   const logMeOut = async () => {
@@ -25,10 +30,28 @@ const Settings = () => {
     navigate("(tabs)");
     // await mverseGet("/api/auth/logout");
   };
+
   return (
     <ProtectedContainer byId={true}>
       <View style={{ flex: 1, padding: 15 }}>
-        <Text style={{ marginBottom: 10 }}>User settings</Text>
+        <View style={{ flexDirection: "row", gap: 20, paddingVertical: 10 }}>
+          <GenerateUserPicture user={user} size={90} />
+          <View style={{ paddingVertical: 10 }}>
+            <ReactNativePaperText
+              variant="headlineMedium"
+              style={{ color: Colors[colorScheme ?? "dark"].text }}
+            >
+              {user.name}
+            </ReactNativePaperText>
+            <Text
+              style={{ color: Colors[colorScheme ?? "dark"].secondaryText }}
+            >
+              {user.username}
+            </Text>
+          </View>
+        </View>
+        <Text style={{ marginVertical: 10 }}>User settings</Text>
+
         <ChangeImage type="dp" />
         <ChangeImage type="cover" />
         <LogoButton

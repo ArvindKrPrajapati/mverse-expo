@@ -11,6 +11,7 @@ export default {
     purple: "#643DFF",
     secondary: "#eee",
     secondaryText: "#222",
+    lineColor: "gainsboro",
   },
   dark: {
     text: "#eee",
@@ -21,5 +22,10 @@ export default {
     purple: "#643DFF",
     secondary: "#16212F",
     secondaryText: "grey",
+    lineColor: "#1F2935",
+  },
+  default: {
+    blue: "#0047ab",
+    red: "red",
   },
 };
