@@ -22,7 +22,7 @@ export default {
     purple: "#643DFF",
     secondary: "#16212F",
     secondaryText: "grey",
-    lineColor: "#2B3746",
+    lineColor: "#1F2935",
   },
   default: {
     blue: "#0047ab",

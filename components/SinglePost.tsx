@@ -99,6 +99,8 @@ const SinglePost = ({ data, vertical = false, showLine = true }: Props) => {
                 style={{
                   width: 1.5,
                   flex: 1,
+                  position: "absolute",
+                  height: "140%",
                   backgroundColor: Colors[colorScheme ?? "dark"].lineColor,
                 }}
               ></View>
