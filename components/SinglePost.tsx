@@ -164,7 +164,7 @@ const SinglePost = ({ data, vertical = false, showLine = true }: Props) => {
                 }}
                 onPress={(event: any) => {
                   // @ts-ignore
-                  navigation.navigate("add", { item });
+                  navigation.navigate("add-social", { item });
                   // router.push("/social/add");
                 }}
                 label={handleNumbers(item.comments)}
