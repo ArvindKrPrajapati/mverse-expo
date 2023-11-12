@@ -37,6 +37,7 @@ const SocialHome = () => {
         },
         swipeEnabled: true,
         animationEnabled: true,
+        tabBarPressColor: "transparent",
       }}
     >
       <Tab.Screen name="For you" component={AllPosts} />

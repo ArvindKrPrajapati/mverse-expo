@@ -65,7 +65,12 @@ export default function TabLayout() {
               />
             </View>
             <View
-              style={{ flexDirection: "row", alignItems: "center", width: 108 }}
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "flex-end",
+                width: 108,
+              }}
             >
               <Link href="/search-modal" asChild>
                 <Pressable>

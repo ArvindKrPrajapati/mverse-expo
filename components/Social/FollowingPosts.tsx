@@ -1,12 +1,9 @@
-import { View, Text } from 'react-native'
-import React from 'react'
+import { View, Text } from "react-native";
+import React from "react";
+import NotFound from "../NotFound";
 
 const FollowingPosts = () => {
-  return (
-    <View>
-      {/* <Text>FollowingPosts</Text> */}
-    </View>
-  )
-}
+  return <NotFound message="No Post available" />;
+};
 
-export default FollowingPosts
+export default FollowingPosts;

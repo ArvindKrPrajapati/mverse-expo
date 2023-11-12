@@ -6,11 +6,11 @@ import AllPosts from "../components/Social/AllPosts";
 
 const SinglePostPage = () => {
   const localParams = useLocalSearchParams();
-  const id: any = localParams.id;
-  if (!id) {
+  const item: any = localParams.item;
+  if (!item) {
     return <NotFound message="This post is not available" />;
   }
-  return <AllPosts id={id} />;
+  return <AllPosts id={item._id} item={item} />;
 };
 
 export default SinglePostPage;

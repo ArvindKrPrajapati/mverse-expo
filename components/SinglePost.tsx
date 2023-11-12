@@ -66,7 +66,7 @@ const SinglePost = ({ data, vertical = false, showLine = true }: Props) => {
       onPress={() => {
         if (!vertical) {
           // @ts-ignore
-          navigation.push("social-post", { id: item._id });
+          navigation.push("social-post", { item });
         }
       }}
       style={

@@ -6,16 +6,17 @@ import { mverseGet } from "../../service/api.service";
 import Colors from "../../constants/Colors";
 import NotFound from "../NotFound";
 import SinglePost from "../SinglePost";
-const limit = 20;
+const limit = 10;
 
 type props = {
   id?: string;
+  item?: any;
 };
-const AllPosts = ({ id }: props) => {
+const AllPosts = ({ id, item }: props) => {
   const [skip, setSkip] = useState(0);
   const [loadMoreLoading, setLoadMoreLoading] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [data, setData] = useState<any>([]);
+  const [data, setData] = useState<any>([item]);
   const [end, setEnd] = useState(false);
   const { showErrorSnackbar, showSuccessSnackbar } = useSnackbar();
   const [refreshing, setRefreshing] = useState(false);
@@ -59,7 +60,7 @@ const AllPosts = ({ id }: props) => {
     !end && data.length == limit ? setSkip((prev) => prev + limit) : null;
   };
 
-  if (loading) {
+  if (!item && loading) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <ActivityIndicator size={50} color={Colors.dark.purple} />
@@ -96,13 +97,22 @@ const AllPosts = ({ id }: props) => {
       onEndReached={loadMore}
       onEndReachedThreshold={0.1}
       ListFooterComponent={
-        loadMoreLoading ? (
-          <ActivityIndicator
-            size={40}
-            color={Colors.dark.purple}
-            style={{ marginBottom: 30, marginTop: 15 }}
-          />
-        ) : null
+        <>
+          {loadMoreLoading ? (
+            <ActivityIndicator
+              size={40}
+              color={Colors.dark.purple}
+              style={{ marginBottom: 30, marginTop: 15 }}
+            />
+          ) : null}
+          {item && loading ? (
+            <ActivityIndicator
+              size={40}
+              color={Colors.dark.purple}
+              style={{ marginBottom: 30, marginTop: 15 }}
+            />
+          ) : null}
+        </>
       }
       refreshing={refreshing}
       onRefresh={onRefresh}
