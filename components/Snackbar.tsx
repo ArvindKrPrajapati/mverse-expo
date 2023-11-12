@@ -7,9 +7,12 @@ import {
   TouchableOpacity,
 } from "react-native";
 import LogoButton from "./LogoButton";
+import { usePathname } from "expo-router";
+import { avoidRoute } from "../utils/common";
 
 const Snackbar = ({ message, visible, type, setVisible, bottom = 15 }: any) => {
   const [translateY] = useState(new Animated.Value(100));
+  const pathname = usePathname();
 
   useEffect(() => {
     if (visible) {
@@ -46,7 +49,10 @@ const Snackbar = ({ message, visible, type, setVisible, bottom = 15 }: any) => {
     <Animated.View
       style={[
         styles.container,
-        { transform: [{ translateY }], bottom: bottom },
+        {
+          transform: [{ translateY }],
+          bottom: avoidRoute.includes(pathname) ? 65 : 15,
+        },
       ]}
     >
       <LogoButton

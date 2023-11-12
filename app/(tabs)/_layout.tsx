@@ -1,11 +1,12 @@
 import { MaterialCommunityIcons, FontAwesome } from "@expo/vector-icons";
 import { Link, Tabs } from "expo-router";
-import { Image, Pressable, useColorScheme } from "react-native";
+import { Image, Pressable, View, useColorScheme } from "react-native";
 
 import Colors from "../../constants/Colors";
 import { useAuth } from "../../Providers/AuthProvider";
 import GenerateUserPicture from "../../components/GenerateUserPicture";
 import Menu from "../../components/Menu";
+import LogoButton from "../../components/LogoButton";
 const darkLogo = require("../../assets/images/darkLogo.png");
 const logo = require("../../assets/images/logo.png");
 /**
@@ -39,7 +40,7 @@ export default function TabLayout() {
         headerRightContainerStyle: {
           flexDirection: "row",
           alignItems: "center",
-          justifyContent: "flex-end",
+          justifyContent: "space-between",
           gap: 3,
         },
         headerStyle: {
@@ -47,71 +48,104 @@ export default function TabLayout() {
         },
         headerRight: () => (
           <>
-            <Link href="/search-modal" asChild>
-              <Pressable>
-                {({ pressed }) => (
-                  <FontAwesome
-                    name="search"
-                    size={18}
-                    color={Colors[colorScheme ?? "light"].text}
-                    style={{ marginRight: 17, opacity: pressed ? 0.5 : 1 }}
-                  />
-                )}
-              </Pressable>
-            </Link>
-            {user ? (
-              <>
-                <Link
-                  href={
-                    user.username
-                      ? `/profile/${user.username}`
-                      : "/create-channel"
-                  }
-                  asChild
-                >
-                  <Pressable>
-                    {({ pressed }) => (
-                      <GenerateUserPicture
-                        user={user}
-                        size={23}
-                        style={{
-                          marginRight: 15,
-                          opacity: pressed ? 0.5 : 1,
-                        }}
-                      />
-                    )}
-                  </Pressable>
-                </Link>
-              </>
-            ) : (
-              <>
-                <Link href={rawEmail ? "/verify-otp" : "/login"} asChild>
-                  <Pressable>
-                    {({ pressed }) => (
-                      <MaterialCommunityIcons
-                        name="account-circle"
-                        size={25}
-                        color={Colors[colorScheme ?? "light"].text}
-                        style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
-                      />
-                    )}
-                  </Pressable>
-                </Link>
-              </>
-            )}
-            {user ? <Menu /> : null}
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Image
+                source={logo}
+                style={{
+                  height: 60,
+                  resizeMode: "contain",
+                  width: 130,
+                }}
+              />
+            </View>
+            <View
+              style={{ flexDirection: "row", alignItems: "center", width: 108 }}
+            >
+              <Link href="/search-modal" asChild>
+                <Pressable>
+                  {({ pressed }) => (
+                    <FontAwesome
+                      name="search"
+                      size={18}
+                      color={Colors[colorScheme ?? "light"].text}
+                      style={{ marginRight: 17, opacity: pressed ? 0.5 : 1 }}
+                    />
+                  )}
+                </Pressable>
+              </Link>
+              {user ? (
+                <>
+                  <Link
+                    href={
+                      user.username
+                        ? `/profile/${user.username}`
+                        : "/create-channel"
+                    }
+                    asChild
+                  >
+                    <Pressable>
+                      {({ pressed }) => (
+                        <GenerateUserPicture
+                          user={user}
+                          size={23}
+                          style={{
+                            marginRight: 15,
+                            opacity: pressed ? 0.5 : 1,
+                          }}
+                        />
+                      )}
+                    </Pressable>
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link href={rawEmail ? "/verify-otp" : "/login"} asChild>
+                    <Pressable>
+                      {({ pressed }) => (
+                        <MaterialCommunityIcons
+                          name="account-circle"
+                          size={25}
+                          color={Colors[colorScheme ?? "light"].text}
+                          style={{
+                            marginRight: 15,
+                            opacity: pressed ? 0.5 : 1,
+                          }}
+                        />
+                      )}
+                    </Pressable>
+                  </Link>
+                </>
+              )}
+              {user ? <Menu /> : null}
+            </View>
           </>
         ),
         headerLeft: () => (
-          <Image
-            source={logo}
-            style={{
-              height: 60,
-              resizeMode: "contain",
-              width: 130,
-            }}
-          />
+          <Link href="/social" asChild>
+            <Pressable style={{ padding: 7, paddingLeft: 10 }}>
+              {({ pressed }) => (
+                <MaterialCommunityIcons
+                  name="apps"
+                  size={25}
+                  color={Colors[colorScheme ?? "light"].text}
+                  style={{
+                    opacity: pressed ? 0.5 : 1,
+                  }}
+                />
+              )}
+            </Pressable>
+          </Link>
         ),
+        headerLeftContainerStyle: {
+          width: 105,
+          paddingLeft: 5,
+        },
       }}
     >
       <Tabs.Screen
