@@ -54,10 +54,10 @@ const SinglePost = ({ data, vertical = false, showLine = true }: Props) => {
   };
   const renderUserInfo = (
     <Text style={{ flexDirection: "row" }} numberOfLines={vertical ? 2 : 1}>
-      <Text style={{ fontWeight: "500" }}>{item.user.name}</Text>
+      <Text style={{ fontWeight: "500" }}>{item?.user?.name}</Text>
       {vertical ? " \n" : "  "}
       <Text style={{ color: Colors[colorScheme ?? "dark"].secondaryText }}>
-        {item.user.username} {formatDate(item.createdAt, !vertical)}
+        {item?.user?.username} {formatDate(item.createdAt, !vertical)}
       </Text>
     </Text>
   );
@@ -83,13 +83,15 @@ const SinglePost = ({ data, vertical = false, showLine = true }: Props) => {
         }}
       >
         <View style={{ flexDirection: "row", gap: vertical ? 15 : 0 }}>
-          <Pressable
-            onPress={() => {
-              router.push(`/profile/${item.user.username}`);
-            }}
-            style={{ alignItems: "center" }}
-          >
-            <GenerateUserPicture user={item.user} size={40} />
+          <View style={{ alignItems: "center" }}>
+            <TouchableRipple
+              onPress={() => {
+                router.push(`/profile/${item?.user?.username}`);
+              }}
+              style={{ alignItems: "center", zIndex: 2 }}
+            >
+              <GenerateUserPicture user={item?.user} size={40} />
+            </TouchableRipple>
             {/* line */}
             {showLine ? (
               <View
@@ -102,7 +104,7 @@ const SinglePost = ({ data, vertical = false, showLine = true }: Props) => {
                 }}
               ></View>
             ) : null}
-          </Pressable>
+          </View>
           {vertical ? renderUserInfo : null}
         </View>
         <View style={{ paddingVertical: 2, flex: 1 }}>

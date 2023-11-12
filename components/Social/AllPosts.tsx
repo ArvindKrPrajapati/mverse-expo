@@ -16,7 +16,7 @@ const AllPosts = ({ id, item }: props) => {
   const [skip, setSkip] = useState(0);
   const [loadMoreLoading, setLoadMoreLoading] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [data, setData] = useState<any>([item]);
+  const [data, setData] = useState<any>(item ? [item] : []);
   const [end, setEnd] = useState(false);
   const { showErrorSnackbar, showSuccessSnackbar } = useSnackbar();
   const [refreshing, setRefreshing] = useState(false);

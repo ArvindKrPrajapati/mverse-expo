@@ -246,6 +246,7 @@ function RootLayoutNav() {
                   headerShadowVisible: false,
                   headerShown: true,
                   title: "",
+                  headerTintColor: "white",
                   headerStyle: { backgroundColor: "black" },
                 }}
               />

@@ -19,7 +19,7 @@ const ViewImage = () => {
         alignItems: "center",
       }}
     >
-      <StatusBar backgroundColor="black" />
+      <StatusBar backgroundColor="black" style="light" />
 
       <Image
         source={{ uri: item }}
