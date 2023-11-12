@@ -5,20 +5,23 @@ import {
   useColorScheme,
   ScrollView,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Constants from "expo-constants";
 import { TextInput } from "react-native-paper";
 import { Link, useRouter } from "expo-router";
 import { useRoute } from "@react-navigation/native";
 import { useAuth } from "../Providers/AuthProvider";
 import { useSnackbar } from "../Providers/SnackbarProvider";
-import { mversePost } from "../service/api.service";
+import { mversePost, uploadImgFile } from "../service/api.service";
 import Colors from "../constants/Colors";
 import LogoButton from "../components/LogoButton";
 import GenerateUserPicture from "../components/GenerateUserPicture";
 import { Text } from "../components/Themed";
 import ProtectedContainer from "../components/ProtectedContainer";
+import * as ImagePicker from "expo-image-picker";
+import ShowImages from "../components/Social/ShowImages";
 
+const MAX_IMG = 2;
 const AddSocial = () => {
   const colorScheme = useColorScheme();
   const { user } = useAuth();
@@ -27,21 +30,42 @@ const AddSocial = () => {
   const [loading, setLoading] = useState(false);
   const { showErrorSnackbar, showSuccessSnackbar } = useSnackbar();
   const route = useRoute();
+  const [images, setImages] = useState<any>([]);
   // @ts-ignore
   const item = route.params.item || null;
 
   const handleSubmit = async () => {
-    if (text.length == 0) {
+    if (text.length == 0 && images.length == 0) {
       return;
     }
+
     try {
       setLoading(true);
-      const res = await mversePost("/api/posts", {
-        text,
-        belongsTo: item ? item._id : null,
-      });
+      const remoteUrls: string[] = [];
+      await Promise.all(
+        images.map(async (item: any) => {
+          let base64Img: any = `data:image/jpg;base64,${item.base64}`;
+
+          const imgRes = await uploadImgFile(base64Img, (progress) => {});
+          remoteUrls.push(imgRes.secure_url);
+        })
+      );
+      const payload: any = {};
+      if (text) {
+        payload["text"] = text;
+      }
+      if (remoteUrls.length) {
+        payload["images"] = remoteUrls;
+      }
+      if (item) {
+        payload["belongsTo"] = item._id;
+      }
+
+      const res = await mversePost("/api/posts", payload);
       if (res.success) {
         showSuccessSnackbar("Post created");
+        setText("");
+        setImages([]);
         router.back();
       } else {
         showErrorSnackbar(res.error);
@@ -51,6 +75,33 @@ const AddSocial = () => {
     } finally {
       setText("");
       setLoading(false);
+    }
+  };
+
+  const handleSelectImage = async () => {
+    if (images.length == MAX_IMG) {
+      showErrorSnackbar("Max 2 images", 500);
+      return;
+    }
+    try {
+      // No permissions request is necessary for launching the image library
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        quality: 1,
+        allowsMultipleSelection: true,
+        selectionLimit: 4,
+        base64: true,
+      });
+
+      if (!result.canceled) {
+        const img: any = result.assets;
+        setImages([...images, ...img]);
+        // setMyUser({ ...myUser, [type]: img.uri });
+        // let base64Img = `data:image/jpg;base64,${img.base64}`;
+        // setImage(base64Img);
+      }
+    } catch (error: any) {
+      console.log({ error: error.message });
     }
   };
   return (
@@ -97,7 +148,12 @@ const AddSocial = () => {
         <ScrollView>
           {item ? (
             <View
-              style={{ flexDirection: "row", paddingHorizontal: 20, gap: 10 }}
+              style={{
+                flexDirection: "row",
+                paddingHorizontal: 20,
+                gap: 10,
+                alignItems: "flex-start",
+              }}
             >
               <View
                 style={{
@@ -132,6 +188,7 @@ const AddSocial = () => {
                     marginTop: 10,
                     fontSize: 12,
                     color: Colors[colorScheme ?? "dark"].secondaryText,
+                    flex: 1,
                   }}
                   numberOfLines={1}
                 >
@@ -144,6 +201,9 @@ const AddSocial = () => {
                   </Link>
                 </Text>
               </View>
+              <View style={{ width: "32%" }}>
+                <ShowImages images={item.images} width="100%" square={true} />
+              </View>
             </View>
           ) : null}
           <KeyboardAvoidingView
@@ -155,28 +215,47 @@ const AddSocial = () => {
             }}
           >
             <GenerateUserPicture user={user} size={35} />
-            <TextInput
-              underlineColor="transparent"
-              underlineColorAndroid="transparent"
-              activeUnderlineColor="transparent"
-              multiline={true}
-              contentStyle={{
-                color: Colors[colorScheme ?? "dark"].text,
-                paddingLeft: 5,
-                paddingTop: 5,
-              }}
-              autoFocus={true}
-              value={text}
-              onChangeText={setText}
-              placeholder={item ? "Reply to post" : "What are you thinking ?"}
-              placeholderTextColor={Colors[colorScheme ?? "dark"].secondaryText}
-              style={{
-                backgroundColor: Colors[colorScheme ?? "dark"].background,
-                flex: 1,
-              }}
-            />
+            <View style={{ flex: 1 }}>
+              <TextInput
+                underlineColor="transparent"
+                underlineColorAndroid="transparent"
+                activeUnderlineColor="transparent"
+                multiline={true}
+                contentStyle={{
+                  color: Colors[colorScheme ?? "dark"].text,
+                  paddingLeft: 5,
+                  paddingTop: 5,
+                }}
+                autoFocus={true}
+                value={text}
+                onChangeText={setText}
+                placeholder={item ? "Reply to post" : "What are you thinking ?"}
+                placeholderTextColor={
+                  Colors[colorScheme ?? "dark"].secondaryText
+                }
+                style={{
+                  backgroundColor: Colors[colorScheme ?? "dark"].background,
+                  flex: 1,
+                }}
+              />
+              <ShowImages images={images} />
+            </View>
           </KeyboardAvoidingView>
         </ScrollView>
+        <View
+          style={{
+            padding: 10,
+            paddingHorizontal: 15,
+            backgroundColor: Colors[colorScheme ?? "dark"].secondary,
+          }}
+        >
+          <LogoButton
+            icon="image-plus"
+            onPress={handleSelectImage}
+            style={{ marginTop: 0, backgroundColor: "transparent" }}
+            textColor={Colors.default.purple}
+          />
+        </View>
       </View>
     </ProtectedContainer>
   );

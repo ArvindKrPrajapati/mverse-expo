@@ -239,6 +239,16 @@ function RootLayoutNav() {
                 name="add-social"
                 options={{ headerShown: false, animation: "none" }}
               />
+              <Stack.Screen
+                name="view-image"
+                options={{
+                  animation: "default",
+                  headerShadowVisible: false,
+                  headerShown: true,
+                  title: "",
+                  headerStyle: { backgroundColor: "black" },
+                }}
+              />
             </Stack>
           </SwiperModalProvider>
         </ThemeProvider>

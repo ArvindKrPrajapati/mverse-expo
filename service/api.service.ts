@@ -107,3 +107,50 @@ export const uploadImage = async (
     throw error;
   }
 };
+
+export const uploadImgFile = async (
+  imageFile: File,
+  onProgress: (progress: number) => void
+): Promise<any> => {
+  try {
+    const formData = new FormData();
+    formData.append("file", imageFile);
+    formData.append("upload_preset", "equals");
+
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open(
+        "POST",
+        `https://api.cloudinary.com/v1_1/shivraj-technology/image/upload`,
+        true
+      );
+
+      xhr.upload.onprogress = (progressEvent: ProgressEvent) => {
+        if (progressEvent.lengthComputable) {
+          const progress = Math.round(
+            (progressEvent.loaded / progressEvent.total) * 100
+          );
+          onProgress(progress);
+        }
+      };
+
+      xhr.onload = () => {
+        if (xhr.status === 200) {
+          const res = JSON.parse(xhr.responseText);
+          resolve(res);
+        } else {
+          reject(xhr.responseText);
+        }
+      };
+
+      xhr.onerror = () => {
+        reject(xhr.statusText);
+      };
+
+      xhr.send(formData);
+    });
+  } catch (error) {
+    console.error("Error uploading image to Cloudinary:", error);
+    throw error;
+  }
+};

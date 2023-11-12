@@ -14,6 +14,7 @@ import { Link, useNavigation, usePathname, useRouter } from "expo-router";
 import { TouchableHighlight } from "react-native-gesture-handler";
 import { TouchableRipple } from "react-native-paper";
 import { mversePost } from "../service/api.service";
+import ShowImages from "./Social/ShowImages";
 
 type Props = {
   data: any;
@@ -27,7 +28,10 @@ const SinglePost = ({ data, vertical = false, showLine = true }: Props) => {
   const navigation = useNavigation();
   const [liking, setLiking] = useState(false);
   const [item, setItem] = useState(data);
-
+  const border = {
+    borderBottomWidth: 1,
+    borderBottomColor: Colors[colorScheme ?? "dark"].lineColor,
+  };
   useEffect(() => {
     setItem(data);
   }, [data]);
@@ -69,14 +73,7 @@ const SinglePost = ({ data, vertical = false, showLine = true }: Props) => {
           navigation.push("social-post", { item });
         }
       }}
-      style={
-        vertical
-          ? {
-              borderBottomWidth: 1,
-              borderBottomColor: Colors[colorScheme ?? "dark"].lineColor,
-            }
-          : {}
-      }
+      style={[vertical ? border : {}, !showLine ? border : {}]}
     >
       <View
         style={{
@@ -111,7 +108,19 @@ const SinglePost = ({ data, vertical = false, showLine = true }: Props) => {
         <View style={{ paddingVertical: 2, flex: 1 }}>
           {!vertical ? renderUserInfo : null}
           {/* content */}
-          <Text style={{ marginTop: 1 }}>{item.text}</Text>
+          {item.text ? (
+            <Text
+              style={{
+                marginTop: 1,
+              }}
+            >
+              {item.text}
+            </Text>
+          ) : null}
+          {/* images */}
+          {item.images && item.images.length ? (
+            <ShowImages clickable={true} images={item.images} />
+          ) : null}
           {/* exact date time */}
           {vertical ? (
             <Text

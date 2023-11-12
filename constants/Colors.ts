@@ -27,5 +27,6 @@ export default {
   default: {
     blue: "#0047ab",
     red: "red",
+    purple: "#643DFF",
   },
 };
