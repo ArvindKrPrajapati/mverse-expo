@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "209778303015",
+    "project_id": "mverse-cd449",
+    "storage_bucket": "mverse-cd449.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:209778303015:android:dc5f501bdffacbe2ee6e02",
+        "android_client_info": {
+          "package_name": "com.arvindkumar143.Mverse"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCIsE05x6czzRRuykr-NgKB570-y06m9BA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
