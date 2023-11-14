@@ -1,6 +1,12 @@
 // AuthContext.tsx
 
-import React, { createContext, useState, useEffect, useContext } from "react";
+import React, {
+  createContext,
+  useState,
+  useEffect,
+  useContext,
+  useRef,
+} from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { mverseGet, mversePost } from "../service/api.service";
 import { useAuth } from "./AuthProvider";
@@ -44,6 +50,8 @@ export const NotificationProvider = ({ children }: any) => {
   const { user } = useAuth();
   const [skipState, setSkipState] = useState(0);
   const { showErrorSnackbar } = useSnackbar();
+  const responseListener = useRef<any>();
+  const notificationListener = useRef<any>();
 
   const loadNotification = async (
     showLodaing: boolean = false,
@@ -125,6 +133,23 @@ export const NotificationProvider = ({ children }: any) => {
 
   useEffect(() => {
     registerForPushNotificationsAsync();
+    notificationListener.current =
+      Notifications.addNotificationReceivedListener(async (notification) => {
+        setRecieved(true);
+        await loadNotification(false, 0);
+      });
+
+    responseListener.current =
+      Notifications.addNotificationResponseReceivedListener((response) => {
+        console.log({ response });
+      });
+
+    return () => {
+      Notifications.removeNotificationSubscription(
+        notificationListener.current
+      );
+      Notifications.removeNotificationSubscription(responseListener.current);
+    };
   }, []);
 
   return (
