@@ -57,7 +57,7 @@ const NotificationPage = () => {
       <TouchableRipple
         onPress={() => {
           // @ts-ignore
-          navigation.push("social-post", { item: { _id: item.post._id } });
+          navigation.push("social-post", { item: item.post });
         }}
         rippleColor={
           colorScheme == "dark" ? "rgba(0,0,0,0.5)" : "rgba(0,0,0,0.1)"
