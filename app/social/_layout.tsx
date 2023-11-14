@@ -6,6 +6,7 @@ import Colors from "../../constants/Colors";
 import { useAuth } from "../../Providers/AuthProvider";
 import GenerateUserPicture from "../../components/GenerateUserPicture";
 import ProtectedContainer from "../../components/ProtectedContainer";
+import { useNotification } from "../../Providers/NotificationProvider";
 const logo = require("../../assets/images/logo.png");
 
 function TabBarIcon(props: {
@@ -20,7 +21,7 @@ function TabBarIcon(props: {
 const SocialLayout = () => {
   const colorScheme = useColorScheme();
   const { user, rawEmail } = useAuth();
-
+  const { recieved } = useNotification();
   return (
     <ProtectedContainer>
       <Tabs
@@ -64,18 +65,22 @@ const SocialLayout = () => {
                   justifyContent: "flex-end",
                 }}
               >
-                {/* <Link href="/search-modal" asChild>
-                <Pressable>
-                  {({ pressed }) => (
-                    <FontAwesome
-                      name="search"
-                      size={18}
-                      color={Colors[colorScheme ?? "light"].text}
-                      style={{ marginRight: 20, opacity: pressed ? 0.5 : 1 }}
-                    />
-                  )}
-                </Pressable>
-              </Link> */}
+                <Link href="/social/notification" asChild>
+                  <Pressable>
+                    {({ pressed }) => (
+                      <MaterialCommunityIcons
+                        name={recieved ? "bell-badge" : "bell-outline"}
+                        size={18}
+                        color={
+                          recieved
+                            ? Colors.default.red
+                            : Colors[colorScheme ?? "light"].text
+                        }
+                        style={{ marginRight: 20, opacity: pressed ? 0.5 : 1 }}
+                      />
+                    )}
+                  </Pressable>
+                </Link>
                 <Link href="/" asChild>
                   <Pressable>
                     {({ pressed }) => (
@@ -136,6 +141,12 @@ const SocialLayout = () => {
             tabBarStyle: { display: "none" },
           }}
           initialParams={{ item: null }}
+        />
+        <Tabs.Screen
+          name="notification"
+          options={{
+            href: null,
+          }}
         />
       </Tabs>
     </ProtectedContainer>
