@@ -14,6 +14,7 @@ import * as Notifications from "expo-notifications";
 import { Platform } from "react-native";
 import { useSnackbar } from "./SnackbarProvider";
 import Constants from "expo-constants";
+import { useRouter } from "expo-router";
 // Define the context type
 interface NotificationContextType {
   recieved: boolean;
@@ -52,6 +53,7 @@ export const NotificationProvider = ({ children }: any) => {
   const { showErrorSnackbar } = useSnackbar();
   const responseListener = useRef<any>();
   const notificationListener = useRef<any>();
+  const router = useRouter();
 
   const loadNotification = async (
     showLodaing: boolean = false,
@@ -128,6 +130,7 @@ export const NotificationProvider = ({ children }: any) => {
     token = await Notifications.getExpoPushTokenAsync({
       projectId: Constants.expoConfig?.extra?.eas.projectId,
     });
+
     await mversePost("/api/posts/notification/token", { token: token.data });
   }
 
@@ -141,7 +144,7 @@ export const NotificationProvider = ({ children }: any) => {
 
     responseListener.current =
       Notifications.addNotificationResponseReceivedListener((response) => {
-        console.log({ response });
+        router.push("/social");
       });
 
     return () => {
